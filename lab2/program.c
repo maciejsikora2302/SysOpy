@@ -4,17 +4,99 @@
 #include <time.h>
  
 
-int partition(FILE* file, int from, int to, int char_to_compare){
-    return 0;
+int partition(FILE* file, int from, int to, int char_to_compare, int buffer_size){
+    int pivot_index = from;
+    int lower_then_pivot_index = from;
+    for(int i = from + 1; i < to; i++){
+        char* buffer_for_pivot = (char*) calloc(buffer_size, sizeof(char));
+
+        if(fseek(file, pivot_index, SEEK_SET) == 0){
+            fread(buffer_for_pivot, 1, buffer_size, file);
+        }else{
+            printf("Something went wrong with fseek in qsort for pivot\n");
+            perror("Something went wrong with fseek in qsort for pivot\n");
+            return -1;
+        }
+
+        char* buffer_for_str = (char*) calloc(buffer_size, sizeof(char));
+        
+        if(fseek(file, i, SEEK_SET) == 0){
+            fread(buffer_for_str, 1, buffer_size, file);
+        }else{
+            printf("Something went wrong with fseek in qsort buffer for str\n");
+            perror("Something went wrong with fseek in qsort buffer for str\n");
+            return -1;
+        }
+
+
+        if (buffer_for_str[char_to_compare] < buffer_for_pivot[char_to_compare]){
+            
+            
+            if(fseek(file, lower_then_pivot_index, SEEK_SET) == 0){
+                fread(buffer_for_pivot, 1, buffer_size, file); //overwrite to not use free and calloc again
+                fwrite(buffer_for_str, 1, buffer_size, file);
+
+                if(fseek(file, i, SEEK_SET) == 0){
+                    fwrite(buffer_for_pivot, 1, buffer_size, file);
+                }else{
+                    printf("Something went wrong with fseek in qsort in\n");
+                    perror("Something went wrong with fseek in qsort in\n");
+                    return -1;
+                }
+
+            }else{
+                printf("Something went wrong with fseek in qsort out\n");
+                perror("Something went wrong with fseek in qsort out\n");
+                return -1;
+            }
+            
+            lower_then_pivot_index++;
+        }
+        free(buffer_for_pivot);
+        free(buffer_for_str);
+    }
+
+
+    char* buffer_for_pivot = (char*) calloc(buffer_size, sizeof(char));
+
+    if(fseek(file, pivot_index, SEEK_SET) == 0){
+        fread(buffer_for_pivot, 1, buffer_size, file);
+    }else{
+        printf("Something went wrong with fseek in qsort for pivot\n");
+        perror("Something went wrong with fseek in qsort for pivot\n");
+        return -1;
+    }
+
+    char* buffer_for_str = (char*) calloc(buffer_size, sizeof(char));
+    
+    if(fseek(file, lower_then_pivot_index, SEEK_SET) == 0){
+        fread(buffer_for_str, 1, buffer_size, file);
+        fwrite(buffer_for_pivot, 1 ,buffer_size, file);
+    }else{
+        printf("Something went wrong with fseek in qsort buffer for str\n");
+        perror("Something went wrong with fseek in qsort buffer for str\n");
+        return -1;
+    }
+
+    if(fseek(file, pivot_index, SEEK_SET) == 0){
+        fwrite(buffer_for_pivot, 1, buffer_size, file);
+    }else{
+        printf("Something went wrong with fseek in qsort for pivot\n");
+        perror("Something went wrong with fseek in qsort for pivot\n");
+        return -1;
+    }
+
+
+    return lower_then_pivot_index;
 }
 
 
-void qsort_file(FILE* file, int from, int to, int char_to_compare){
+void qsort_file(FILE* file, int from, int to, int char_to_compare, int buffer_size){
 
-    int partition_index = partition(file, from, to, char_to_compare);
+    int partition_index = partition(file, from, to, char_to_compare, buffer_size);
 
-    qsort_file(file, from, partition_index - 1, char_to_compare);
-    qsort_file(file, partition_index + 1, to, char_to_compare);
+    qsort_file(file, from, partition_index - 1, char_to_compare, buffer_size);
+    qsort_file(file, partition_index + 1, to, char_to_compare, buffer_size);
 }
 
 

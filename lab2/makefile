@@ -8,4 +8,4 @@ generate:
 
 sort:
 	make compile
-	./program sort dane 10 10 lib
+	./program sort dane1 10 10 lib
