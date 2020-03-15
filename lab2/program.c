@@ -16,6 +16,7 @@ int main(int argc, char **argv)
         int length_of_record = atoi(length_of_record_tmp); 
         printf("File name: %s\nRecords to create: %d\nLength: %d\n", file_name, number_of_records_to_create, length_of_record);
         //Do tąd jak na razie cycuś glancuś pizdeczka
+        //yes
 
 
 
