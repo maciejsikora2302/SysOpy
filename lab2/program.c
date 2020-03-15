@@ -1,29 +1,38 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
  
 int main(int argc, char **argv) 
 {
-	// cout << "Nazwa programu:   " << argv[0]  << endl << "Ilosc argumentow: " << argc << endl;
-	// for (int i = 1; i < argc; i++){
-    //     // cout << "Argumentem nr " << i << " jest " << argv[i] << endl;
-    //     printf("Argumenter nr %d jest %s\n", i, argv[i]);
-    // }
+    if(argc < 5){
+        printf("Too few arguments :3\n");
+        return 1;
+    }
+    if(argc == 5 && strcmp(argv[1], "generate") == 0){
+        char* file_name = argv[2];
+        char* number_of_records_to_create_tmp = argv[3];
+        int number_of_records_to_create = atoi(number_of_records_to_create_tmp);
+        char* length_of_record_tmp = argv[4]; 
+        int length_of_record = atoi(length_of_record_tmp); 
+        printf("File name: %s\nRecords to create: %d\nLength: %d\n", file_name, number_of_records_to_create, length_of_record);
+        //Do tąd jak na razie cycuś glancuś pizdeczka
 
-    rename("test1.txt","test.txt"); 
-    // char napis[200];
-    char* napis = (char*) calloc(200, sizeof(char));
-    FILE *plik=fopen("test.txt", "r"); 
-    if(plik) { 
-        fread(napis, 1, 200, plik); 
-        printf("%s \n",napis);
-        // printf("\n"); 
-        // fread(napis, 1, 15, plik); 
-        // printf("%s",napis);
-        // printf("\n"); 
-        // fwrite("Zdanie drugie.", 1, 14, plik); 
-        // rename("test.txt","test1.txt"); 
-        fclose(plik);
-    } 
-    free(napis);
-    return 0;
+
+
+
+
+
+
+
+
+
+    }else if(argc == 6 &&  strcmp(argv[1], "sort") == 0 ){
+
+    }else if(argc == 6 && strcmp(argv[1], "copy") == 0){
+
+    }else{
+        printf("Wrong command :3\n");
+    }
+
+
 }
