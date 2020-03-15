@@ -5,6 +5,9 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h> 
+#include <time.h>
+#include <memory.h>
+#include <sys/times.h>
  
 
 int partition_lib(FILE* file, int from, int to, int char_to_compare, int buffer_size){
@@ -16,8 +19,7 @@ int partition_lib(FILE* file, int from, int to, int char_to_compare, int buffer_
         if(fseek(file, pivot_index, 0) == 0){
             fread(buffer_for_pivot, 1, buffer_size, file);
         }else{
-            printf("Something went wrong with fseek in qsort for pivot\n");
-            perror("Something went wrong with fseek in qsort for pivot\n");
+            printf("Something went wrong with fseek in qsort for pivot lib\n");
             return -1;
         }
 
@@ -27,7 +29,6 @@ int partition_lib(FILE* file, int from, int to, int char_to_compare, int buffer_
             fread(buffer_for_str, 1, buffer_size, file);
         }else{
             printf("Something went wrong with fseek in qsort buffer for str\n");
-            perror("Something went wrong with fseek in qsort buffer for str\n");
             return -1;
         }
         if (buffer_for_str[char_to_compare] < buffer_for_pivot[char_to_compare]){
@@ -42,13 +43,11 @@ int partition_lib(FILE* file, int from, int to, int char_to_compare, int buffer_
                     fwrite(buffer_for_pivot, 1, buffer_size, file);
                 }else{
                     printf("Something went wrong with fseek in qsort in\n");
-                    perror("Something went wrong with fseek in qsort in\n");
                     return -1;
                 }
 
             }else{
                 printf("Something went wrong with fseek in qsort out\n");
-                perror("Something went wrong with fseek in qsort out\n");
                 return -1;
             }
             
@@ -65,8 +64,7 @@ int partition_lib(FILE* file, int from, int to, int char_to_compare, int buffer_
     if(fseek(file, pivot_index, 0) == 0){
         fread(buffer_for_pivot, 1, buffer_size, file);
     }else{
-        printf("Something went wrong with fseek in qsort for pivot\n");
-        perror("Something went wrong with fseek in qsort for pivot\n");
+        printf("Something went wrong with fseek in qsort for 6345gdfg234\n");
         return -1;
     }
 
@@ -77,16 +75,14 @@ int partition_lib(FILE* file, int from, int to, int char_to_compare, int buffer_
         fseek(file, lower_then_pivot_index, 0);
         fwrite(buffer_for_pivot, 1 ,buffer_size, file);
     }else{
-        printf("Something went wrong with fseek in qsort buffer for str\n");
-        perror("Something went wrong with fseek in qsort buffer for str\n");
+        printf("Something went wrong with fseek in qsort buffer for st23r\n");
         return -1;
     }
 
     if(fseek(file, pivot_index, 0) == 0){
         fwrite(buffer_for_str, 1, buffer_size, file);
     }else{
-        printf("Something went wrong with fseek in qsort for pivot\n");
-        perror("Something went wrong with fseek in qsort for pivot\n");
+        printf("Something went wrong with fseek in qsort for 123452346123462\n");
         return -1;
     }
 
@@ -121,7 +117,8 @@ int partition_sys(int fd, int from, int to, int char_to_compare, int buffer_size
         if(lseek(fd, pivot_index, SEEK_SET) >= 0){
             read(fd, buffer_for_pivot, buffer_size);
         }else{
-            printf("Something went wrong with fseek in qsort for pivot\n");
+            // printf("%ld", lseek(fd, pivot_index, SEEK_SET));
+            perror("Something went wrong with fseek in qsort for pivot systemowo\n");
             return -1;
         }
 
@@ -198,17 +195,44 @@ void qsort_fil_sys(int fd, int from, int to, int char_to_compare, int buffer_siz
     if(from < to){
         int partition_index = partition_sys(fd, from, to, char_to_compare, buffer_size);
 
+        if(partition_index < 0) return;
+
         qsort_fil_sys(fd, from, partition_index - buffer_size, char_to_compare, buffer_size);
         qsort_fil_sys(fd, partition_index + buffer_size, to, char_to_compare, buffer_size);
     }
 }
 
+double time_diff(clock_t t1, clock_t t2){
+    return ((double)(t2 - t1) / sysconf(_SC_CLK_TCK));
+}
 
+void write_time_to_file(char* message, char* file_name, clock_t start, clock_t end, struct tms* t_start, struct tms* t_end){
+    double real = time_diff(start, end);
+    double user = time_diff(t_start -> tms_utime, t_end -> tms_utime);
+    double system = time_diff(t_start -> tms_stime, t_end -> tms_stime);
+
+    FILE* file = fopen(file_name, "a+");
+    fprintf(file, "%s", message);
+    fprintf(file, "%s", "Real time: ");
+    fprintf(file, "%f", real);
+    fprintf(file, "%s", "\nUser time: ");
+    fprintf(file, "%f", user);
+    fprintf(file, "%s", "\nSystem time: ");
+    fprintf(file, "%f", system);
+    fprintf(file, "%s", "\n\n==========================================\n\n");
+    fclose(file);
+}
 
 
 int main(int argc, char **argv) 
 {
     srand(time(NULL));
+
+    clock_t start;
+    clock_t end;
+
+    struct tms* tms_start = calloc(1, sizeof(struct tms*));
+    struct tms* tms_end   = calloc(1, sizeof(struct tms*));
 
     if(argc < 5){
         printf("Too few arguments :3\n");
@@ -221,7 +245,6 @@ int main(int argc, char **argv)
         char* length_of_record_tmp = argv[4]; 
         int length_of_record = atoi(length_of_record_tmp); 
         printf("File name: %s\nRecords to create: %d\nLength: %d\n", file_name, number_of_records_to_create, length_of_record);
-        //Do tąd jak na razie cycuś glancuś pizdeczka
         
         FILE* file = fopen(file_name, "w");
         for(int i = 0; i < number_of_records_to_create; i++){
@@ -251,26 +274,30 @@ int main(int argc, char **argv)
         int length_of_record = atoi(length_of_record_tmp); 
 
         char* source = argv[5]; 
+
+        char* message = (char*) calloc(250, sizeof(char));
         
-        printf("File name: %s\nRecords: %d\nLength: %d\nSource: %s\n", file_name, number_of_records_to_create, length_of_record, source);
+        sprintf(message, "Command: %s\nFile name: %s\nRecords: %d\nLength: %d\nSource: %s\n", "sort", file_name, number_of_records_to_create, length_of_record, source);
 
         
         
         if(strcmp(source, "lib") == 0){
+            start = times(tms_start);
             FILE* file = fopen(file_name, "r+");
             for(int i = length_of_record - 1; i>=0; i-- )
                 qsort_fil_lib(file, 0, number_of_records_to_create * (length_of_record+1), i, length_of_record+1);
             fclose(file);
+            end = times(tms_end);
         }else if(strcmp(source, "sys") == 0){
+            start = times(tms_start);
             int fd = open(file_name, O_RDWR);
-            // char* tmp =  (char*) calloc(length_of_record, sizeof(char));
-            // read(fd, tmp, length_of_record);
-            // free(tmp);
-            // printf("%s\n", tmp);
+            if(fd < 0 ) perror("Plik sie nie otworzył");
             for(int i = length_of_record - 1; i>=0; i-- )
                 qsort_fil_sys(fd, 0, number_of_records_to_create * (length_of_record+1), i, length_of_record+1);
             close(fd);
+            end = times(tms_end);
         }
+        write_time_to_file(message, "wyniki.txt", start, end, tms_start, tms_end);
     }else if(argc == 7 && strcmp(argv[1], "copy") == 0){
         char* file_name_from = argv[2];
 
@@ -283,10 +310,13 @@ int main(int argc, char **argv)
         int length_of_record = atoi(length_of_record_tmp); 
 
         char* source = argv[6]; 
-        printf("File name from: %s\nFile name to: %s\nRecords to create: %d\nLength: %d\nSource: %s\n", file_name_from, file_name_to, number_of_records_to_create, length_of_record, source);
+
+        char* message = (char*) calloc(250, sizeof(char));
+        sprintf(message, "Command: %s\nFile name from: %s\nFile name to: %s\nRecords to create: %d\nLength: %d\nSource: %s\n", "copy", file_name_from, file_name_to, number_of_records_to_create, length_of_record, source);
 
 
         if(strcmp(source, "lib")  == 0){
+            start = times(tms_start);
             FILE* file_from = fopen(file_name_from, "r");
             FILE* file_to = fopen(file_name_to, "w");
             for(int i=0;i<number_of_records_to_create;i++){
@@ -299,7 +329,9 @@ int main(int argc, char **argv)
             }
             fclose(file_to);
             fclose(file_from);
+            end = times(tms_end);
         }else if (strcmp(source, "sys") == 0){
+            start = times(tms_start);
             length_of_record++;
             char* buffor = (char*) calloc(length_of_record, sizeof(char));
             int we, wy;
@@ -308,8 +340,9 @@ int main(int argc, char **argv)
             while(read(we, buffor, length_of_record) > 0)
                 write(wy, buffor, length_of_record); 
             free(buffor);
+            end = times(tms_end);
         }
-
+        write_time_to_file(message, "wyniki.txt", start, end, tms_start, tms_end);
 
     }else{
         printf("Wrong command :3\n");
