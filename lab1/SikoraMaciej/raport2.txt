@@ -1,0 +1,636 @@
+compare_pairs a.txt:b.txt --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt --------------
+	REAL_TIME: 0.020000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+Static library 
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+compare_pairs a.txt:b.txt --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Static library 
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+compare_pairs a.txt:b.txt lorem_small.txt:lorem_small2.txt --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 2 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove_block  0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Medium Test (8 files - medium-sized) a.txt:b.txt lorem_medium.txt:lorem_medium2.txt a.txt:lorem_medium2.txt b.txt:lorem_medium.txt
+Static library 
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+compare_pairs a.txt:b.txt lorem_small.txt:lorem_small2.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 2 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove_block  0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Medium Test (8 files - medium-sized) a.txt:b.txt lorem_medium.txt:lorem_medium2.txt a.txt:lorem_medium2.txt b.txt:lorem_medium.txt
+Static library 
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+compare_pairs a.txt:b.txt lorem_small.txt:lorem_small2.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 2 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove_block  0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Medium Test (8 files - medium-sized) a.txt:b.txt lorem_medium.txt:lorem_medium2.txt a.txt:lorem_medium2.txt b.txt:lorem_medium.txt
+Static library 
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+compare_pairs a.txt:b.txt lorem_small.txt:lorem_small2.txt --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 2 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove_block  0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Medium Test (8 files - medium-sized) a.txt:b.txt lorem_medium.txt:lorem_medium2.txt a.txt:lorem_medium2.txt b.txt:lorem_medium.txt
+create_table 8 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt lorem_medium.txt:lorem_medium2.txt a.txt:lorem_medium2.txt b.txt:lorem_medium.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove_block  0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Static library 
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+compare_pairs a.txt:b.txt lorem_small.txt:lorem_small2.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 2 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove_block  0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Medium Test (8 files - medium-sized) a.txt:b.txt lorem_medium.txt:lorem_medium2.txt a.txt:lorem_medium2.txt b.txt:lorem_medium.txt
+Static library 
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+compare_pairs a.txt:b.txt lorem_small.txt:lorem_small2.txt --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 2 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove_block  0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Medium Test (8 files - medium-sized) a.txt:b.txt lorem_medium.txt:lorem_medium2.txt a.txt:lorem_medium2.txt b.txt:lorem_medium.txt
+create_table 8 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt lorem_medium.txt:lorem_medium2.txt a.txt:lorem_medium2.txt b.txt:lorem_medium.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove_block  0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 2 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Large Test (10 files - large/medium) 
+create_table 10 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs lorem_large.txt:lorem_large2.txt lorem_large.txt:lorem_medium.txt lorem_large.txt:lorem_medium2.txt lorem_large2.txt:lorem_small2.txt lorem_small.txt:lorem_large.txt --------------
+	REAL_TIME: 0.040000l
+	USER_TIME: 0.020000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 2 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 4 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Static library 
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+compare_pairs a.txt:b.txt lorem_small.txt:lorem_small2.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 2 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove_block  0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Medium Test (8 files - medium-sized) a.txt:b.txt lorem_medium.txt:lorem_medium2.txt a.txt:lorem_medium2.txt b.txt:lorem_medium.txt
+create_table 8 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt lorem_medium.txt:lorem_medium2.txt a.txt:lorem_medium2.txt b.txt:lorem_medium.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove_block  0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 2 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Large Test (10 files - large/medium) 
+create_table 10 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs lorem_large.txt:lorem_large2.txt lorem_large.txt:lorem_medium.txt lorem_large.txt:lorem_medium2.txt lorem_large2.txt:lorem_small2.txt lorem_small.txt:lorem_large.txt --------------
+	REAL_TIME: 0.040000l
+	USER_TIME: 0.020000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 2 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 4 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Static library 
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+compare_pairs a.txt:b.txt lorem_small.txt:lorem_small2.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 2 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove_block  0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Medium Test (8 files - medium-sized) a.txt:b.txt lorem_medium.txt:lorem_medium2.txt a.txt:lorem_medium2.txt b.txt:lorem_medium.txt
+create_table 8 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt lorem_medium.txt:lorem_medium2.txt a.txt:lorem_medium2.txt b.txt:lorem_medium.txt --------------
+	REAL_TIME: 0.020000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove_block  0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 2 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Large Test (10 files - large/medium) 
+create_table 10 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs lorem_large.txt:lorem_large2.txt lorem_large.txt:lorem_medium.txt lorem_large.txt:lorem_medium2.txt lorem_large2.txt:lorem_small2.txt lorem_small.txt:lorem_large.txt --------------
+	REAL_TIME: 0.040000l
+	USER_TIME: 0.020000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 2 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 4 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Static library 
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+compare_pairs a.txt:b.txt lorem_small.txt:lorem_small2.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 2 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove_block  0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Medium Test (8 files - medium-sized) a.txt:b.txt lorem_medium.txt:lorem_medium2.txt a.txt:lorem_medium2.txt b.txt:lorem_medium.txt
+create_table 8 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt lorem_medium.txt:lorem_medium2.txt a.txt:lorem_medium2.txt b.txt:lorem_medium.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove_block  0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 2 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Large Test (10 files - large/medium) 
+create_table 10 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs lorem_large.txt:lorem_large2.txt lorem_large.txt:lorem_medium.txt lorem_large.txt:lorem_medium2.txt lorem_large2.txt:lorem_small2.txt lorem_small.txt:lorem_large.txt --------------
+	REAL_TIME: 0.040000l
+	USER_TIME: 0.020000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 2 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 4 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Static library 
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+Static library 
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+compare_pairs a.txt:b.txt lorem_small.txt:lorem_small2.txt --------------
+	REAL_TIME: 0.010000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 1 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove_block  0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Medium Test (8 files - medium-sized) a.txt:b.txt lorem_medium.txt:lorem_medium2.txt a.txt:lorem_medium2.txt b.txt:lorem_medium.txt
+create_table 8 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt lorem_medium.txt:lorem_medium2.txt a.txt:lorem_medium2.txt b.txt:lorem_medium.txt --------------
+	REAL_TIME: 0.020000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove_block  0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Large Test (10 files - large/medium) 
+create_table 10 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs lorem_large.txt:lorem_large2.txt lorem_large.txt:lorem_medium.txt lorem_large.txt:lorem_medium2.txt lorem_large2.txt:lorem_small2.txt lorem_small.txt:lorem_large.txt --------------
+	REAL_TIME: 0.050000l
+	USER_TIME: 0.020000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Static library 
+Small Test (4 files - small files) a.txt b.txt lorem_small.txt lorem_small2.txt
+compare_pairs a.txt:b.txt lorem_small.txt:lorem_small2.txt --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove_block  0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Medium Test (8 files - medium-sized) a.txt:b.txt lorem_medium.txt:lorem_medium2.txt a.txt:lorem_medium2.txt b.txt:lorem_medium.txt
+create_table 8 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs a.txt:b.txt lorem_medium.txt:lorem_medium2.txt a.txt:lorem_medium2.txt b.txt:lorem_medium.txt --------------
+	REAL_TIME: 0.020000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove_block  0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Large Test (10 files - large/medium) 
+create_table 10 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+compare_pairs lorem_large.txt:lorem_large2.txt lorem_large.txt:lorem_medium.txt lorem_large.txt:lorem_medium2.txt lorem_large2.txt:lorem_small2.txt lorem_small.txt:lorem_large.txt --------------
+	REAL_TIME: 0.040000l
+	USER_TIME: 0.020000l
+	SYSTEM_TIME: 0.000000l
+
+Remove operation  1 0 --------------
+	REAL_TIME: 0.000000l
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
