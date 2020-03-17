@@ -1,3 +1,5 @@
+#define _XOPEN_SOURCE 500
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -11,29 +13,24 @@
 #include <dirent.h>
 #include <stdio.h>
 #include <string.h>
+#include <ftw.h>
+#include <stdint.h>
 
-void listdir(const char *name, int indent)
-{
-    DIR *dir;
-    struct dirent *entry;
+// int MAXLEVEL = 100000;
 
-    if (!(dir = opendir(name)))
-        return;
 
-    while ((entry = readdir(dir)) != NULL) {
-        if (entry->d_type == DT_DIR) {
-            char path[1024];
-            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
-                continue;
-            snprintf(path, sizeof(path), "%s/%s", name, entry->d_name);
-            printf("%*s[%s]\n", indent, "", entry->d_name);
-            listdir(path, indent + 2);
-        } else {
-            printf("%*s- %s\n", indent, "", entry->d_name);
-        }
-    }
-    closedir(dir);
-}
+
+int mtime_flag = 0;
+int atime_flag = 0;
+int maxdepth_flag = 0;
+
+int mtime_value = 0;
+int mtime_sign = 0;
+
+int atime_value = 0;
+int atime_sign = 0;
+
+int maxdepth_value = 0;
 
 void operaten_on_time(char* parametr, int* time_value, int* time_sign){
         if(parametr[0] == '+'){
@@ -71,7 +68,7 @@ void operaten_on_time(char* parametr, int* time_value, int* time_sign){
                 sscanf(buffor, "%d", time_value);
                 free(buffor);
             }
-    }
+}
 
 void parse_command(char* command, char* follow_up, int* mtime_flag, int* atime_flag, int* maxdepth_flag, int* mtime_sign, int* atime_sign, int* mtime_value, int* atime_value, int* maxdepth_value){
     if(strcmp(command, "-mtime") == 0){
@@ -94,9 +91,40 @@ void parse_command(char* command, char* follow_up, int* mtime_flag, int* atime_f
         }
 }
 
+void print_info(char* path, struct stat* statistics){
+    time_t seconds = time(NULL);
+    printf("File path: %s\n", path);
 
+    // printf("Depth and maxdepth: %d, %d\n", current_depth, maxdepth_value);
 
-void seach_directory(char* path){
+    printf("Number of hard links: %ld\n", statistics -> st_nlink);
+
+    if(S_ISREG(statistics->st_mode)){
+        printf("File type: %s\n", "file");
+    }else if(S_ISDIR(statistics->st_mode)){
+        printf("File type: %s\n", "dir");
+    }else if(S_ISCHR(statistics->st_mode)){
+        printf("File type: %s\n", "char dev");
+    }else if(S_ISBLK(statistics->st_mode)){
+        printf("File type: %s\n", "block dev");
+    }else if(S_ISFIFO(statistics->st_mode)){
+        printf("File type: %s\n", "fifo");
+    }else if(S_ISLNK(statistics->st_mode)){
+        printf("File type: %s\n", "slink");
+    }else if(S_ISSOCK(statistics->st_mode)){
+        printf("File type: %s\n", "sock");
+    }
+
+    printf("Size in bytes: %ld\n", statistics -> st_size);
+
+    printf("Last access (years, months, days, hours): %ld, %ld, %ld, %ld\n", (seconds - statistics->st_atime)/31104000, (seconds - statistics->st_atime)/2592000, (seconds - statistics->st_atime)/86400, (seconds - statistics->st_atime)/3600);
+
+    printf("Last modification (years, months, days, hours): %ld, %ld, %ld, %ld\n", (seconds - statistics->st_mtime)/31104000, (seconds - statistics->st_mtime)/2592000, (seconds - statistics->st_mtime)/86400, (seconds - statistics->st_mtime)/3600);
+    
+    printf("\n");
+}
+
+void seach_directory(char* path, int current_depth, int mtime_flag, int atime_flag, int maxdepth_flag, int mtime_sign, int atime_sign, int mtime_value, int atime_value, int maxdepth_value){
     time_t seconds = time(NULL);
 
     DIR* dir;
@@ -108,6 +136,17 @@ void seach_directory(char* path){
             // printf("%s", "tu dziala\n");
             if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
                 continue;
+            if(current_depth == -1){
+                current_depth++;
+                struct stat* tmp = (struct stat*) calloc(1, sizeof(struct stat));
+                lstat(path, tmp);
+                print_info(path, tmp);
+                free(tmp);
+                if(maxdepth_flag == 1 && maxdepth_value == 0){
+                    // current_depth++;
+                    return;
+                }
+            }
             struct stat* tmp = (struct stat*) calloc(1, sizeof(struct stat));
             char* tmp_path = (char*) calloc(1000, sizeof(char));
             strcpy(tmp_path, path);
@@ -115,36 +154,49 @@ void seach_directory(char* path){
             strcat(tmp_path, entry->d_name);
             lstat(tmp_path, tmp);
 
-            char* actualpath = (char*) calloc(10000, sizeof(char));
-            realpath(tmp_path, actualpath);
-            printf("File path: %s\n", actualpath);
-
-            printf("Number of hard links: %ld\n", tmp -> st_nlink);
-
-            if(S_ISREG(tmp->st_mode)){
-                printf("File type: %s\n", "file");
-            }else if(S_ISDIR(tmp->st_mode)){
-                printf("File type: %s\n", "dir");
-            }else if(S_ISCHR(tmp->st_mode)){
-                printf("File type: %s\n", "char dev");
-            }else if(S_ISBLK(tmp->st_mode)){
-                printf("File type: %s\n", "block dev");
-            }else if(S_ISFIFO(tmp->st_mode)){
-                printf("File type: %s\n", "fifo");
-            }else if(S_ISLNK(tmp->st_mode)){
-                printf("File type: %s\n", "slink");
-            }else if(S_ISSOCK(tmp->st_mode)){
-                printf("File type: %s\n", "sock");
+            if(mtime_flag){
+                
+                int mtime = (seconds - tmp->st_mtime)/86400;
+                int days = mtime_value;
+                if(mtime_sign == 1 && !(mtime > days)){ 
+                    free(tmp_path);
+                    free(tmp);                                          //written in this form so that it looks clearer
+                    continue;                                           //could have written ine one linke but then it is very hard to understand
+                }else if(mtime_sign == 0 && !(mtime == days)){
+                    free(tmp_path);
+                    free(tmp); 
+                    continue;
+                }else if(mtime_sign == -1 && !(mtime < days)){
+                    free(tmp_path);
+                    free(tmp); 
+                    continue;
+                }
             }
 
-            printf("Size in bytes: %ld\n", tmp -> st_size);
 
-            printf("Last access (years, months, days, hours): %ld, %ld, %ld, %ld\n", (seconds - tmp->st_atime)/31104000, (seconds - tmp->st_atime)/2592000, (seconds - tmp->st_atime)/86400, (seconds - tmp->st_atime)/3600);
+            if(atime_flag){
+                int atime = (seconds - tmp->st_atime)/86400;
+                int days = atime_value;
+                if(atime_sign == 1 && !(atime > days)){ 
+                    free(tmp_path);
+                    free(tmp);                                          //written in this form so that it looks clearer
+                    continue;                                           //could have written ine one linke but then it is very hard to understand
+                }else if(atime_sign == 0 && !(atime == days)){
+                    free(tmp_path);
+                    free(tmp);                          
+                    continue;
+                }else if(atime_sign == -1 && !(atime < days)){
+                    free(tmp_path);
+                    free(tmp);                          
+                    continue;
+                }
+            }
 
-            printf("Last modification (years, months, days, hours): %ld, %ld, %ld, %ld\n", (seconds - tmp->st_mtime)/31104000, (seconds - tmp->st_mtime)/2592000, (seconds - tmp->st_mtime)/86400, (seconds - tmp->st_mtime)/3600);
+
+            char* actualpath = (char*) calloc(10000, sizeof(char));
+            realpath(tmp_path, actualpath);
             
-            printf("\n");
-
+            print_info(actualpath, tmp);
             // if(S_ISLNK(tmp->st_mode)){
             //     if(!S_ISREG(tmp->st_mode)){
             //         seach_directory(actualpath); 
@@ -158,7 +210,13 @@ void seach_directory(char* path){
 
             if((S_ISDIR(tmp->st_mode) && !S_ISLNK(tmp->st_mode))){
                 // printf("\n---->Inputing path: %s\n", actualpath);
-                seach_directory(actualpath);
+                if(maxdepth_flag == 1 && (current_depth + 1 < maxdepth_value)){
+                    current_depth++;
+                    seach_directory(actualpath, current_depth, mtime_flag, atime_flag, maxdepth_flag, mtime_sign, atime_sign, mtime_value, atime_value, maxdepth_value);
+                }else if(maxdepth_flag == 0){
+                    seach_directory(actualpath, current_depth, mtime_flag, atime_flag, maxdepth_flag, mtime_sign, atime_sign, mtime_value, atime_value, maxdepth_value);
+                }
+                    
             }
             free(actualpath);
             free(tmp_path);
@@ -173,24 +231,90 @@ void seach_directory(char* path){
     closedir(dir);
 }
 
+
+
+static int display_info(const char *path, const struct stat *statistics, int tflag, struct FTW *ftwbuf){
+    if(maxdepth_flag == 1 && ftwbuf -> level > maxdepth_value){
+        return 0;
+    }
+    // printf("%-3s %2d %7jd   %-40s %d %s\n",
+    //     (tflag == FTW_D) ?   "d"   : (tflag == FTW_DNR) ? "dnr" :
+    //     (tflag == FTW_DP) ?  "dp"  : (tflag == FTW_F) ?
+    //         (S_ISBLK(sb->st_mode) ? "f b" :
+    //         S_ISCHR(sb->st_mode) ? "f c" :
+    //         S_ISFIFO(sb->st_mode) ? "f p" :
+    //         S_ISREG(sb->st_mode) ? "f r" :
+    //         S_ISSOCK(sb->st_mode) ? "f s" : "f ?") :
+    //     (tflag == FTW_NS) ?  "ns"  : (tflag == FTW_SL) ?  "sl" :
+    //     (tflag == FTW_SLN) ? "sln" : "?",
+    //     ftwbuf->level, (intmax_t) sb->st_size,
+    //     path, ftwbuf->base, path + ftwbuf->base);
+    // return 0;           /* To tell nftw() to continue */
+    time_t seconds = time(NULL);
+
+    if(mtime_flag){       
+        int mtime = (seconds - statistics->st_mtime)/86400;
+        int days = mtime_value;
+        if(mtime_sign == 1 && !(mtime > days)){ 
+            return 0;                                          
+        }else if(mtime_sign == 0 && !(mtime == days)){
+            return 0;
+        }else if(mtime_sign == -1 && !(mtime < days)){
+            return 0;
+        }
+    }
+
+
+    if(atime_flag){
+        int atime = (seconds - statistics->st_atime)/86400;
+        int days = atime_value;
+        if(atime_sign == 1 && !(atime > days)){ 
+            return 0;
+        }else if(atime_sign == 0 && !(atime == days)){
+            return 0;
+        }else if(atime_sign == -1 && !(atime < days)){
+            return 0;
+        }
+    }
+
+    
+    printf("File path: %s\n", path);
+
+    // printf("Depth and maxdepth: %d, %d\n", current_depth, maxdepth_value);
+
+    printf("Number of hard links: %ld\n", statistics -> st_nlink);
+
+    if(S_ISREG(statistics->st_mode)){
+        printf("File type: %s\n", "file");
+    }else if(S_ISDIR(statistics->st_mode)){
+        printf("File type: %s\n", "dir");
+    }else if(S_ISCHR(statistics->st_mode)){
+        printf("File type: %s\n", "char dev");
+    }else if(S_ISBLK(statistics->st_mode)){
+        printf("File type: %s\n", "block dev");
+    }else if(S_ISFIFO(statistics->st_mode)){
+        printf("File type: %s\n", "fifo");
+    }else if(S_ISLNK(statistics->st_mode)){
+        printf("File type: %s\n", "slink");
+    }else if(S_ISSOCK(statistics->st_mode)){
+        printf("File type: %s\n", "sock");
+    }
+
+    printf("Size in bytes: %ld\n", statistics -> st_size);
+
+    printf("Last access (years, months, days, hours): %ld, %ld, %ld, %ld\n", (seconds - statistics->st_atime)/31104000, (seconds - statistics->st_atime)/2592000, (seconds - statistics->st_atime)/86400, (seconds - statistics->st_atime)/3600);
+
+    printf("Last modification (years, months, days, hours): %ld, %ld, %ld, %ld\n", (seconds - statistics->st_mtime)/31104000, (seconds - statistics->st_mtime)/2592000, (seconds - statistics->st_mtime)/86400, (seconds - statistics->st_mtime)/3600);
+    
+    printf("\n");
+}
+
 int main(int argc, char **argv){
     
     
     // printf("%ld\n", (seconds - tmp->st_atime)/3600);
     printf("\n");
 
-
-    int mtime_flag = 0;
-    int atime_flag = 0;
-    int maxdepth_flag = 0;
-
-    int mtime_value = 0;
-    int mtime_sign = 0;
-
-    int atime_value = 0;
-    int atime_sign = 0;
-
-    int maxdepth_value = 0;
 
 
     // printf("%d\n", argc);
@@ -222,8 +346,15 @@ int main(int argc, char **argv){
     printf("signs in order: %d, %d\n", mtime_sign, atime_sign);
     printf("values in order: %d, %d, %d\n\n", mtime_value, atime_value, maxdepth_value);
 
-    
-    seach_directory(path);
+    int flags = 0;
+    flags |= FTW_PHYS;
+    if (nftw(path, display_info, 20, flags) == -1){
+        perror("nftw");
+        exit(EXIT_FAILURE);
+    }
+
+
+    // seach_directory(path, -1, mtime_flag, atime_flag, maxdepth_flag, mtime_sign, atime_sign, mtime_value, atime_value, maxdepth_value);
 
     // listdir("..", 0);
 }
