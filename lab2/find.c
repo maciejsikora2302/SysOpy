@@ -324,24 +324,28 @@ int main(int argc, char **argv){
 
     // printf("%d\n", argc);
     char* path;
+    char* mode;
 
-    if(argc == 2){ //podana tylko ścieżka
+    if(argc == 3){ 
         path = argv[1];
-    }else if(argc == 4){ //mtime, atime or maxdepth podane
+    }else if(argc == 5){
         // printf("%s\n", argv[1]);
         parse_command(argv[1], argv[2], &mtime_flag, &atime_flag, &maxdepth_flag, &mtime_sign, &atime_sign, &mtime_value, &atime_value, &maxdepth_value);
         path = argv[3];
-    }else if(argc == 6){
+        mode = argv[4];
+    }else if(argc == 7){
         parse_command(argv[1], argv[2], &mtime_flag, &atime_flag, &maxdepth_flag, &mtime_sign, &atime_sign, &mtime_value, &atime_value, &maxdepth_value);
         parse_command(argv[3], argv[4], &mtime_flag, &atime_flag, &maxdepth_flag, &mtime_sign, &atime_sign, &mtime_value, &atime_value, &maxdepth_value);
         path = argv[5];
-    }else if(argc == 8){
+        mode = argv[6];
+    }else if(argc == 9){
         parse_command(argv[1], argv[2], &mtime_flag, &atime_flag, &maxdepth_flag, &mtime_sign, &atime_sign, &mtime_value, &atime_value, &maxdepth_value);
         parse_command(argv[3], argv[4], &mtime_flag, &atime_flag, &maxdepth_flag, &mtime_sign, &atime_sign, &mtime_value, &atime_value, &maxdepth_value);
         parse_command(argv[5], argv[6], &mtime_flag, &atime_flag, &maxdepth_flag, &mtime_sign, &atime_sign, &mtime_value, &atime_value, &maxdepth_value);
         path = argv[7];
+        mode = argv[8];
     }else{
-        puts("Wrong amount of arguments :3");
+        puts("Wrong amount of arguments, remember to add last if you want nftw or sys :3");
         path = NULL;
         return 0;
     }
@@ -349,17 +353,21 @@ int main(int argc, char **argv){
     printf("%s\n", path);
     printf("flags in order: %d, %d, %d\n", mtime_flag, atime_flag, maxdepth_flag);
     printf("signs in order: %d, %d\n", mtime_sign, atime_sign);
-    printf("values in order: %d, %d, %d\n\n", mtime_value, atime_value, maxdepth_value);
+    printf("values in order: %d, %d, %d\n", mtime_value, atime_value, maxdepth_value);
+    printf("mode specified: %s\n\n", mode);
 
-    int flags = 0;
-    flags |= FTW_PHYS;
-    if (nftw(path, display_info, 20, flags) == -1){
-        perror("nftw");
-        exit(EXIT_FAILURE);
+    if(strcmp(mode, "nftw") == 0){
+        int flags = 0;
+        flags |= FTW_PHYS;
+        if (nftw(path, display_info, 20, flags) == -1){
+            perror("nftw");
+            exit(EXIT_FAILURE);
+        }
+    }else if(strcmp(mode, "sys") == 0){
+        seach_directory(path, -1, mtime_flag, atime_flag, maxdepth_flag, mtime_sign, atime_sign, mtime_value, atime_value, maxdepth_value);
     }
 
-
-    // seach_directory(path, -1, mtime_flag, atime_flag, maxdepth_flag, mtime_sign, atime_sign, mtime_value, atime_value, maxdepth_value);
+    
 
     // listdir("..", 0);
 }
