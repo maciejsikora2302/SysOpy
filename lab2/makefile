@@ -1,3 +1,17 @@
+compile_find:
+	gcc -Wall -g -c find.c
+	gcc -o find find.o
+	# ./find './test_dir'
+	./find '/home/fedora_test/Documents/SysOpy/SysOpy/lab2/test_dir'
+
+
+run_test_program:
+	gcc -Wall -g -c program.c
+	gcc -o program program.o
+	gcc -Wall -g -c run_tests.c
+	gcc -o run_tests run_tests.o
+	./run_tests
+
 compile:
 	gcc -Wall -g -c program.c
 	gcc -o program program.o
