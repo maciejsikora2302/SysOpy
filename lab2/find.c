@@ -113,7 +113,7 @@ void seach_directory(char* path){
             strcpy(tmp_path, path);
             strcat(tmp_path, "/");
             strcat(tmp_path, entry->d_name);
-            stat(tmp_path, tmp);
+            lstat(tmp_path, tmp);
 
             char* actualpath = (char*) calloc(10000, sizeof(char));
             realpath(tmp_path, actualpath);
@@ -144,7 +144,19 @@ void seach_directory(char* path){
             printf("Last modification (years, months, days, hours): %ld, %ld, %ld, %ld\n", (seconds - tmp->st_mtime)/31104000, (seconds - tmp->st_mtime)/2592000, (seconds - tmp->st_mtime)/86400, (seconds - tmp->st_mtime)/3600);
             
             printf("\n");
-            if(S_ISDIR(tmp->st_mode) && !S_ISLNK(tmp->st_mode)){
+
+            // if(S_ISLNK(tmp->st_mode)){
+            //     if(!S_ISREG(tmp->st_mode)){
+            //         seach_directory(actualpath); 
+            //     }
+            //     return;
+            // }else{
+            //     if(S_ISDIR(tmp->st_mode)){
+            //         seach_directory(actualpath);
+            //     }
+            // }
+
+            if((S_ISDIR(tmp->st_mode) && !S_ISLNK(tmp->st_mode))){
                 // printf("\n---->Inputing path: %s\n", actualpath);
                 seach_directory(actualpath);
             }
