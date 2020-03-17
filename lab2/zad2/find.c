@@ -234,22 +234,6 @@ void seach_directory(char* path, int current_depth, int mtime_flag, int atime_fl
 
 
 static int display_info(const char *path, const struct stat *statistics, int tflag, struct FTW *ftwbuf){
-    // printf("%-3s %2d %7jd   %-40s %d %s\n",
-    //                (tflag == FTW_D) ?   "d"   : (tflag == FTW_DNR) ? "dnr" :
-    //                (tflag == FTW_DP) ?  "dp"  : (tflag == FTW_F) ?
-    //                    (S_ISBLK(sb->st_mode) ? "f b" :
-    //                     S_ISCHR(sb->st_mode) ? "f c" :
-    //                     S_ISFIFO(sb->st_mode) ? "f p" :
-    //                     S_ISREG(sb->st_mode) ? "f r" :
-    //                     S_ISSOCK(sb->st_mode) ? "f s" : "f ?") :
-    //                (tflag == FTW_NS) ?  "ns"  : (tflag == FTW_SL) ?  "sl" :
-    //                (tflag == FTW_SLN) ? "sln" : "?",
-    //                ftwbuf->level, (intmax_t) sb->st_size,
-    //                fpath, ftwbuf->base, fpath + ftwbuf->base);
-    //            return 0;
-
-
-
     if(maxdepth_flag == 1 && ftwbuf -> level > maxdepth_value){
         return 0;
     }
@@ -280,8 +264,10 @@ static int display_info(const char *path, const struct stat *statistics, int tfl
         }
     }
 
-    
-    printf("File path: %s\n", path);
+    char* actualpath = (char*) calloc(10000, sizeof(char));
+    realpath(path, actualpath);
+    printf("File path: %s\n", actualpath);
+    free(actualpath);
 
     // printf("Depth and maxdepth: %d, %d\n", current_depth, maxdepth_value);
 
