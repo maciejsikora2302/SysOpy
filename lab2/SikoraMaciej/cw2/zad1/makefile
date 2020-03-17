@@ -3,6 +3,7 @@ all:
 	make clean
 	make compile
 	make test
+	make clean
 	
 compile:
 	gcc -Wall -g -c program.c
@@ -20,3 +21,7 @@ clean:
 	rm -f *.o
 	rm -f a.out
 	rm -f program
+	rm -f run_tests
+	rm -f generated_data
+	rm -f to_sort_lib
+	rm -f to_sort_sys

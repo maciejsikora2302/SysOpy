@@ -1,0 +1,4 @@
+Zapisuję wnioski tutaj, ponieważ kolejne testy nadpisują wyniki.txt
+Wnioski:
+Zwiększanie długości rekordów bardzo zwiększa czas działania programu
+Funkcje systemowe działają szybciej niż funkcje biblioteczne

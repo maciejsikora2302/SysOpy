@@ -223,8 +223,8 @@ Records: 10
 Length: 512
 Source: lib
 Real time: 0.050000
-User time: 0.020000
-System time: 0.020000
+User time: 0.010000
+System time: 0.030000
 
 ==========================================
 
@@ -259,7 +259,7 @@ Length: 512
 Source: sys
 Real time: 0.110000
 User time: 0.020000
-System time: 0.080000
+System time: 0.070000
 
 ==========================================
 
@@ -350,8 +350,8 @@ Records: 20
 Length: 1024
 Source: sys
 Real time: 0.230000
-User time: 0.050000
-System time: 0.170000
+User time: 0.040000
+System time: 0.180000
 
 ==========================================
 
@@ -361,8 +361,8 @@ Records: 20
 Length: 1024
 Source: lib
 Real time: 0.310000
-User time: 0.080000
-System time: 0.220000
+User time: 0.090000
+System time: 0.210000
 
 ==========================================
 
@@ -395,9 +395,9 @@ File name: to_sort_sys
 Records: 10
 Length: 4096
 Source: sys
-Real time: 0.480000
-User time: 0.090000
-System time: 0.380000
+Real time: 0.470000
+User time: 0.100000
+System time: 0.360000
 
 ==========================================
 
@@ -406,9 +406,9 @@ File name: to_sort_lib
 Records: 10
 Length: 4096
 Source: lib
-Real time: 0.830000
+Real time: 0.820000
 User time: 0.200000
-System time: 0.600000
+System time: 0.610000
 
 ==========================================
 
@@ -441,8 +441,8 @@ File name: to_sort_sys
 Records: 20
 Length: 4096
 Source: sys
-Real time: 1.210000
-User time: 0.270000
+Real time: 1.220000
+User time: 0.260000
 System time: 0.930000
 
 ==========================================
@@ -453,8 +453,8 @@ Records: 20
 Length: 4096
 Source: lib
 Real time: 2.130000
-User time: 0.550000
-System time: 1.570000
+User time: 0.520000
+System time: 1.590000
 
 ==========================================
 
@@ -487,9 +487,9 @@ File name: to_sort_sys
 Records: 5
 Length: 8192
 Source: sys
-Real time: 0.520000
-User time: 0.110000
-System time: 0.410000
+Real time: 0.540000
+User time: 0.100000
+System time: 0.420000
 
 ==========================================
 
@@ -498,8 +498,8 @@ File name: to_sort_lib
 Records: 5
 Length: 8192
 Source: lib
-Real time: 0.820000
-User time: 0.170000
+Real time: 0.830000
+User time: 0.180000
 System time: 0.640000
 
 ==========================================
@@ -533,9 +533,9 @@ File name: to_sort_sys
 Records: 10
 Length: 8192
 Source: sys
-Real time: 1.310000
-User time: 0.260000
-System time: 1.030000
+Real time: 1.320000
+User time: 0.270000
+System time: 1.040000
 
 ==========================================
 
@@ -544,9 +544,9 @@ File name: to_sort_lib
 Records: 10
 Length: 8192
 Source: lib
-Real time: 2.160000
-User time: 0.490000
-System time: 1.650000
+Real time: 2.180000
+User time: 0.560000
+System time: 1.600000
 
 ==========================================
 
