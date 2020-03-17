@@ -4,7 +4,7 @@ compile_find:
 	gcc -o find find.o
 	# ./find './test_dir'
 	clear
-	./find -mtime -2 -maxdepth 1 '/home/fedora_test/Documents/SysOpy/SysOpy/lab2/test_dir'
+	./find -maxdepth 1 '/home/fedora_test/Documents/SysOpy/SysOpy/lab2/test_dir'
 
 
 run_test_program:
