@@ -149,10 +149,15 @@ void delete_o_in_boo(int boo_index, int operation_index){
 }
 
 void delete_boo(int boo_index){
-    for(int i=0; i<main_tab[boo_index]->number_of_operations; i++){
+    if(main_tab[boo_index] != NULL){
+        for(int i=0; i<main_tab[boo_index]->number_of_operations; i++){
         delete_o_in_boo(boo_index, i);
+        }
+        free(main_tab[boo_index]);
+    }else{
+        printf("Block(%d) already deleted.", boo_index);
     }
-    free(main_table[numer_of_boo]);
+    
 }
 
 char* concat(const char* s1, const char* s2) {
