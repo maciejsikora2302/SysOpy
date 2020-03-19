@@ -31,7 +31,7 @@ void print_res(const char* command, clock_t start, clock_t end, struct tms* t_st
 
 int main(int argc, char* argv[]) {
 
-    result_file = fopen("raport2.txt", "a");
+    result_file = fopen("results3b.txt", "a");
 
     clock_t startTime;
     clock_t endTime;

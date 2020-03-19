@@ -1,4 +1,4 @@
-#include "lib.h"
+// #include "lib.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -10,6 +10,29 @@
 #include <time.h>
 
 FILE* result_file = NULL;
+
+
+struct block_of_operations{
+    int number_of_operations;
+    char** operations;
+};
+
+
+void (*set_single_operation_in_boo)(struct block_of_operations*, char*);
+int (*create_boo_from_txt)(char*);
+char** (*convert_file_names)(char*);
+void (*invoke_diff)(char*, char*);
+void (*create_main_table)(int);
+int (*get_number_of_operations)(int);
+void (*delete_o_in_boo)(int, int);
+void (*delete_boo)(int);
+
+int number_of_files;
+
+struct block_of_operations** main_tab;
+
+int next_free_slot;
+
 
 double time_diff(clock_t t1, clock_t t2){
     return ((double)(t2 - t1) / sysconf(_SC_CLK_TCK));
@@ -30,8 +53,33 @@ void print_res(const char* command, clock_t start, clock_t end, struct tms* t_st
 }
 
 int main(int argc, char* argv[]) {
+    void *handle = dlopen("./liblib.so", RTLD_LAZY);
 
-    result_file = fopen("raport2.txt", "a");
+    if(!handle) {
+        printf("Failed to load\n");
+    }
+
+
+    // void (*set_single_operation_in_boo)(struct block_of_operations*, char*);
+    // int (*create_boo_from_txt)(char*);
+    // char** (*convert_file_names)(char*);
+    // void (*invoke_diff)(char*, char*);
+    // void (*create_main_table)(int);
+    // int (*get_number_of_operations)(int);
+    // void (*delete_o_in_boo)(int, int);
+    // void (*delete_boo)(int);
+    
+    set_single_operation_in_boo = dlsym(handle, "set_single_operation_in_boo");
+    create_boo_from_txt = dlsym(handle, "create_boo_from_txt");
+    convert_file_names = dlsym(handle, "convert_file_names");
+    invoke_diff = dlsym(handle, "invoke_diff");
+    create_main_table = dlsym(handle, "create_main_table");
+    get_number_of_operations = dlsym(handle, "get_number_of_operations");
+    delete_o_in_boo = dlsym(handle, "delete_o_in_boo");
+    delete_boo = dlsym(handle, "delete_boo");
+
+
+    result_file = fopen("results3a.txt", "a");
 
     clock_t startTime;
     clock_t endTime;
@@ -41,51 +89,51 @@ int main(int argc, char* argv[]) {
     for(int i=1; i<argc; i++){
         if(strcmp(argv[i], "create_table") == 0){
             startTime = times(tmsStart);
-            create_main_table(atoi(argv[++i]));
+            (*create_main_table)(atoi(argv[++i]));
             endTime = times(tmsEnd);
             print_res("create_table", startTime, endTime, tmsStart, tmsEnd);
         }else if(strcmp(argv[i], "compare_pairs") == 0){
             startTime = times(tmsStart);
-            char** pairs = convert_file_names(argv[++i]);
+            char** pairs = (*convert_file_names)(argv[++i]);
             for(int j=0; j<number_of_files; j++){
                 // printf("File1 and file2: %s %s\n", pairs[j], pairs[j+1]);
 
                 invoke_diff(pairs[j], pairs[j+1]);
                 j++;
 
-                create_boo_from_txt("tmp.txt");
+                (*create_boo_from_txt)("tmp.txt");
                 // printf("Index of this boo: %d\n", index);
-                // printf("Created operations: %d\n", get_number_of_operations(index));
+                // printf("Created operations: %d\n", (*get_number_of_operations)(index));
             }
             endTime = times(tmsEnd);
             print_res("compare_pairs", startTime, endTime, tmsStart, tmsEnd);
         }else if(strcmp(argv[i], "remove_block") == 0){
             startTime = times(tmsStart);
             int block_nr = atoi(argv[++i]);
-            delete_boo(block_nr);
+            (*delete_boo)(block_nr);
             endTime = times(tmsEnd);
             print_res("remove_block", startTime, endTime, tmsStart, tmsEnd);
         }else if(strcmp(argv[i], "remove_operation") == 0){
             startTime = times(tmsStart);
             int block_nr = atoi(argv[++i]);
             int op_nr = atoi(argv[++i]);
-            delete_o_in_boo(block_nr, op_nr);
+            (*delete_o_in_boo)(block_nr, op_nr);
             endTime = times(tmsEnd);
             print_res("remove_operation", startTime, endTime, tmsStart, tmsEnd);
         }else if(strcmp(argv[i], "add_and_remove") == 0){
             startTime = times(tmsStart);
             int times_to_repeat = atoi(argv[++i]);
             int number_of_files = atoi(argv[++i]);
-            create_main_table(number_of_files);
-            char** pairs = convert_file_names(argv[++i]);
+            (*create_main_table)(number_of_files);
+            char** pairs = (*convert_file_names)(argv[++i]);
             for(int j=0; j<times_to_repeat; j++){
                 invoke_diff(pairs[0], pairs[1]);
 
-                create_boo_from_txt("tmp.txt");
+                (*create_boo_from_txt)("tmp.txt");
                 // printf("Index of this boo: %d\n", index);
-                // printf("Created operations: %d\n", get_number_of_operations(index));
+                // printf("Created operations: %d\n", (*get_number_of_operations)(index));
                 next_free_slot--;
-                delete_boo(next_free_slot);
+                (*delete_boo)(next_free_slot);
             }
             endTime = times(tmsEnd);
             print_res("add_and_remove", startTime, endTime, tmsStart, tmsEnd);
@@ -95,6 +143,7 @@ int main(int argc, char* argv[]) {
     }
 
     fclose(result_file);
+    dlclose(handle);
 
     return 0;
 }

@@ -1,0 +1,150 @@
+=======================================
+Command: create_table
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: compare_pairs
+Czas rzeczywisty: 0.010000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: remove_operation
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: remove_block
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: create_table
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: compare_pairs
+Czas rzeczywisty: 0.010000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: create_table
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: compare_pairs
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: create_table
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: compare_pairs
+Czas rzeczywisty: 0.030000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: add_and_remove
+Czas rzeczywisty: 3.250000l
+Czas użytkownika: 0.150000l
+Czas systemowy: 0.470000l
+=======================================
+Command: create_table
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: compare_pairs
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: remove_operation
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: remove_block
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: create_table
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: compare_pairs
+Czas rzeczywisty: 0.010000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: create_table
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: compare_pairs
+Czas rzeczywisty: 0.010000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: create_table
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: compare_pairs
+Czas rzeczywisty: 0.030000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: add_and_remove
+Czas rzeczywisty: 3.190000l
+Czas użytkownika: 0.180000l
+Czas systemowy: 0.440000l
+=======================================
+Command: create_table
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: compare_pairs
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: create_table
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: compare_pairs
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: create_table
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: compare_pairs
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: create_table
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
+=======================================
+Command: compare_pairs
+Czas rzeczywisty: 0.000000l
+Czas użytkownika: 0.000000l
+Czas systemowy: 0.000000l
