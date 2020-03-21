@@ -10,6 +10,7 @@
 #define PARENT main_pid == getpid()
 #define CHILD main_pid != getpid()
 
+int MAX_SIZE;
 /*
 
 ./find './lista' 2 10 shared
@@ -55,7 +56,20 @@ int get_columns(FILE* second_matrix){
     return column_counter;
 }
 
-void count_block(int start_column, int end_column, FILE* first_matrix, FILE* second_matrix, FILE* result_file, int max_columns){
+int get_value_from_row(char* row, int* pos){
+    // int pos = 0;
+    char c = row[pos];
+    char* to_int = calloc(10, sizeof(char));
+    while(c != ' '){
+        to_int[pos] = c;
+        c = row[++pos];
+    }
+    int val_row = atoi(to_int);
+    free(to_int);
+    return val_row;
+}
+
+void calculate_block(int start_column, int end_column, char** matrixA, FILE* second_matrix, FILE* result_file, int max_columns){
     if(max_columns < end_column && start_column >= max_columns){
         printf("I tried to read columns that are too far\n");
         return;
@@ -64,9 +78,34 @@ void count_block(int start_column, int end_column, FILE* first_matrix, FILE* sec
         printf("I had to change end_column to max_column\n");
     }
     printf("I got columns from %d to %d\n", start_column, end_column);
+    
+    int res_tab[end_column-start_column][end_column-start_column];
+
+    for(int i=0; i < end_column-start_column; i++){
+        for(int j=0; j < end_column-start_column; j++){
+            char* row = matrixA[j];
+            int pos = 0;
+            int val_a = get_value_from_row(row, pos);
+
+            //TODO: znajdowanie offsetu, przetestowanie czy działa
+            fseek(second_matrix, offset, SEEK_SET);
+            char c;
+            char* tmp = calloc(10, sizeof(char));
+            int place = 0;
+            while( ((c = fgetc(second_matrix))) != ' ' ){
+                tmp[place++] = c;
+            }
+            int val_b = atoi(tmp);
+            free(tmp);
+
+            res_tab[i][j] += val_a * val_b;
+        }
+        
+    }
 }
 
 int main(int argc, char** argv){
+    MAX_SIZE = 100;
     puts("");
     // return 0;
     if(argc == 5){
@@ -130,6 +169,7 @@ int main(int argc, char** argv){
         FILE* second_matrix_file = fopen(second_matrix, "r");
         FILE* result_file_file = fopen(result_file, "a");
 
+
         
         
         if(first_matrix_file == NULL || second_matrix_file == NULL || result_file_file == NULL){
@@ -137,9 +177,15 @@ int main(int argc, char** argv){
             return 0;
         }
 
-        
+        char** matrixA = calloc(MAX_SIZE, sizeof(char*));
+        for(int i=0; i<MAX_SIZE;i++){
+            char* tmp = calloc(MAX_SIZE, sizeof(char));
+            fgets(tmp, MAX_SIZE, first_matrix_file);
+            matrixA[i] = tmp;
+        }        
 
         int columns = get_columns(second_matrix_file);
+
         printf("Number of columnts: %d\n", columns);
 
         prepare_result_file(result_file_file, columns);
@@ -161,9 +207,9 @@ int main(int argc, char** argv){
         if(CHILD){
             int my_number = getpid() - main_pid - 1;
             for(int i = 0; i <= columns / (number_of_columnts_per_process*number_of_children); i++)
-                count_block(number_of_children * number_of_columnts_per_process * i + my_number * number_of_columnts_per_process,
+                calculate_block(number_of_children * number_of_columnts_per_process * i + my_number * number_of_columnts_per_process,
                             (number_of_children * number_of_columnts_per_process * i ) + number_of_columnts_per_process + my_number * number_of_columnts_per_process,
-                            first_matrix_file, second_matrix_file, result_file_file_2, columns
+                            matrixA, second_matrix_file, result_file_file_2, columns
                 );
         }
         
@@ -176,6 +222,10 @@ int main(int argc, char** argv){
             fclose(first_matrix_file);
             fclose(second_matrix_file);
             fclose(result_file_file);
+            for(int i=0;i<MAX_SIZE;i++){
+                free(matrixA[i]);
+            }
+            free(matrixA);
 
         }else{
             printf("I'm a child with pid(%d) and number(%d)\n", getpid(), getpid()-main_pid);
