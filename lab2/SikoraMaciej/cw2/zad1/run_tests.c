@@ -8,11 +8,11 @@ int main(){
     char* command = (char*) calloc(1000, sizeof(char));
     char* program = "./program ";
     char* commands[3] = {"generate ", "copy ", "sort "};
-    char* number_of_records[12] = {  "10 ", "20 ", 
-                                    "10 ", "20 ", 
-                                    "10 ", "20 ",
-                                    "10 ", "20 ",
-                                    "10 ", "20 ",
+    char* number_of_records[12] = {  "5000 ", "10000 ", 
+                                    "1000 ", "1500 ", 
+                                    "80 ", "120 ",
+                                    "50 ", "75 ",
+                                    "10 ", "15 ",
                                     "5 ", "10 "};
     char* buff_sizes[6] = {"1 ", "4 ", "512 ", "1024 ", "4096 ", "8192 "};
     for(int i=0; i<6; i++){

@@ -1,10 +1,10 @@
 Command: copy
 File name from: generated_data
 File name to: to_sort_sys
-Records to create: 10
+Records to create: 5000
 Length: 1
 Source: sys
-Real time: 0.000000
+Real time: 0.010000
 User time: 0.000000
 System time: 0.000000
 
@@ -13,7 +13,7 @@ System time: 0.000000
 Command: copy
 File name from: generated_data
 File name to: to_sort_lib
-Records to create: 10
+Records to create: 5000
 Length: 1
 Source: lib
 Real time: 0.000000
@@ -24,64 +24,42 @@ System time: 0.000000
 
 Command: sort
 File name: to_sort_sys
-Records: 10
+Records: 5000
 Length: 1
 Source: sys
-Real time: 0.000000
-User time: 0.000000
-System time: 0.000000
+Real time: 0.390000
+User time: 0.110000
+System time: 0.280000
 
 ==========================================
 
 Command: sort
 File name: to_sort_lib
-Records: 10
+Records: 5000
 Length: 1
 Source: lib
-Real time: 0.000000
-User time: 0.000000
-System time: 0.000000
+Real time: 0.240000
+User time: 0.090000
+System time: 0.150000
 
 ==========================================
 
 Command: copy
 File name from: generated_data
 File name to: to_sort_sys
-Records to create: 20
+Records to create: 10000
 Length: 1
 Source: sys
-Real time: 0.000000
+Real time: 0.020000
 User time: 0.000000
-System time: 0.000000
+System time: 0.010000
 
 ==========================================
 
 Command: copy
 File name from: generated_data
 File name to: to_sort_lib
-Records to create: 20
-Length: 1
-Source: lib
-Real time: 0.000000
-User time: 0.000000
-System time: 0.000000
-
-==========================================
-
-Command: sort
-File name: to_sort_sys
-Records: 20
-Length: 1
-Source: sys
-Real time: 0.000000
-User time: 0.000000
-System time: 0.000000
-
-==========================================
-
-Command: sort
-File name: to_sort_lib
-Records: 20
+Records to create: 10000
 Length: 1
 Source: lib
 Real time: 0.000000
@@ -90,10 +68,32 @@ System time: 0.000000
 
 ==========================================
 
+Command: sort
+File name: to_sort_sys
+Records: 10000
+Length: 1
+Source: sys
+Real time: 1.400000
+User time: 0.400000
+System time: 0.990000
+
+==========================================
+
+Command: sort
+File name: to_sort_lib
+Records: 10000
+Length: 1
+Source: lib
+Real time: 0.820000
+User time: 0.380000
+System time: 0.430000
+
+==========================================
+
 Command: copy
 File name from: generated_data
 File name to: to_sort_sys
-Records to create: 10
+Records to create: 1000
 Length: 4
 Source: sys
 Real time: 0.000000
@@ -105,7 +105,7 @@ System time: 0.000000
 Command: copy
 File name from: generated_data
 File name to: to_sort_lib
-Records to create: 10
+Records to create: 1000
 Length: 4
 Source: lib
 Real time: 0.000000
@@ -116,214 +116,168 @@ System time: 0.000000
 
 Command: sort
 File name: to_sort_sys
-Records: 10
+Records: 1000
 Length: 4
 Source: sys
-Real time: 0.000000
-User time: 0.000000
-System time: 0.000000
-
-==========================================
-
-Command: sort
-File name: to_sort_lib
-Records: 10
-Length: 4
-Source: lib
-Real time: 0.000000
-User time: 0.000000
-System time: 0.000000
-
-==========================================
-
-Command: copy
-File name from: generated_data
-File name to: to_sort_sys
-Records to create: 20
-Length: 4
-Source: sys
-Real time: 0.000000
-User time: 0.000000
-System time: 0.000000
-
-==========================================
-
-Command: copy
-File name from: generated_data
-File name to: to_sort_lib
-Records to create: 20
-Length: 4
-Source: lib
-Real time: 0.000000
-User time: 0.000000
-System time: 0.000000
-
-==========================================
-
-Command: sort
-File name: to_sort_sys
-Records: 20
-Length: 4
-Source: sys
-Real time: 0.000000
-User time: 0.000000
-System time: 0.000000
-
-==========================================
-
-Command: sort
-File name: to_sort_lib
-Records: 20
-Length: 4
-Source: lib
-Real time: 0.000000
-User time: 0.000000
-System time: 0.000000
-
-==========================================
-
-Command: copy
-File name from: generated_data
-File name to: to_sort_sys
-Records to create: 10
-Length: 512
-Source: sys
-Real time: 0.000000
-User time: 0.000000
-System time: 0.000000
-
-==========================================
-
-Command: copy
-File name from: generated_data
-File name to: to_sort_lib
-Records to create: 10
-Length: 512
-Source: lib
-Real time: 0.000000
-User time: 0.000000
-System time: 0.000000
-
-==========================================
-
-Command: sort
-File name: to_sort_sys
-Records: 10
-Length: 512
-Source: sys
-Real time: 0.040000
-User time: 0.010000
-System time: 0.030000
-
-==========================================
-
-Command: sort
-File name: to_sort_lib
-Records: 10
-Length: 512
-Source: lib
-Real time: 0.050000
-User time: 0.010000
-System time: 0.030000
-
-==========================================
-
-Command: copy
-File name from: generated_data
-File name to: to_sort_sys
-Records to create: 20
-Length: 512
-Source: sys
-Real time: 0.000000
-User time: 0.000000
-System time: 0.000000
-
-==========================================
-
-Command: copy
-File name from: generated_data
-File name to: to_sort_lib
-Records to create: 20
-Length: 512
-Source: lib
-Real time: 0.000000
-User time: 0.000000
-System time: 0.000000
-
-==========================================
-
-Command: sort
-File name: to_sort_sys
-Records: 20
-Length: 512
-Source: sys
-Real time: 0.110000
-User time: 0.020000
-System time: 0.070000
-
-==========================================
-
-Command: sort
-File name: to_sort_lib
-Records: 20
-Length: 512
-Source: lib
 Real time: 0.130000
-User time: 0.040000
-System time: 0.080000
-
-==========================================
-
-Command: copy
-File name from: generated_data
-File name to: to_sort_sys
-Records to create: 10
-Length: 1024
-Source: sys
-Real time: 0.000000
-User time: 0.000000
-System time: 0.000000
-
-==========================================
-
-Command: copy
-File name from: generated_data
-File name to: to_sort_lib
-Records to create: 10
-Length: 1024
-Source: lib
-Real time: 0.000000
-User time: 0.000000
-System time: 0.000000
+User time: 0.030000
+System time: 0.090000
 
 ==========================================
 
 Command: sort
-File name: to_sort_sys
-Records: 10
-Length: 1024
-Source: sys
-Real time: 0.090000
-User time: 0.020000
+File name: to_sort_lib
+Records: 1000
+Length: 4
+Source: lib
+Real time: 0.110000
+User time: 0.040000
 System time: 0.060000
 
 ==========================================
 
+Command: copy
+File name from: generated_data
+File name to: to_sort_sys
+Records to create: 1500
+Length: 4
+Source: sys
+Real time: 0.000000
+User time: 0.000000
+System time: 0.000000
+
+==========================================
+
+Command: copy
+File name from: generated_data
+File name to: to_sort_lib
+Records to create: 1500
+Length: 4
+Source: lib
+Real time: 0.000000
+User time: 0.000000
+System time: 0.000000
+
+==========================================
+
+Command: sort
+File name: to_sort_sys
+Records: 1500
+Length: 4
+Source: sys
+Real time: 0.240000
+User time: 0.080000
+System time: 0.150000
+
+==========================================
+
 Command: sort
 File name: to_sort_lib
-Records: 10
-Length: 1024
+Records: 1500
+Length: 4
 Source: lib
-Real time: 0.110000
-User time: 0.030000
-System time: 0.070000
+Real time: 0.200000
+User time: 0.060000
+System time: 0.130000
 
 ==========================================
 
 Command: copy
 File name from: generated_data
 File name to: to_sort_sys
-Records to create: 20
+Records to create: 80
+Length: 512
+Source: sys
+Real time: 0.000000
+User time: 0.000000
+System time: 0.000000
+
+==========================================
+
+Command: copy
+File name from: generated_data
+File name to: to_sort_lib
+Records to create: 80
+Length: 512
+Source: lib
+Real time: 0.000000
+User time: 0.000000
+System time: 0.000000
+
+==========================================
+
+Command: sort
+File name: to_sort_sys
+Records: 80
+Length: 512
+Source: sys
+Real time: 0.680000
+User time: 0.190000
+System time: 0.480000
+
+==========================================
+
+Command: sort
+File name: to_sort_lib
+Records: 80
+Length: 512
+Source: lib
+Real time: 0.880000
+User time: 0.230000
+System time: 0.640000
+
+==========================================
+
+Command: copy
+File name from: generated_data
+File name to: to_sort_sys
+Records to create: 120
+Length: 512
+Source: sys
+Real time: 0.000000
+User time: 0.000000
+System time: 0.000000
+
+==========================================
+
+Command: copy
+File name from: generated_data
+File name to: to_sort_lib
+Records to create: 120
+Length: 512
+Source: lib
+Real time: 0.000000
+User time: 0.000000
+System time: 0.000000
+
+==========================================
+
+Command: sort
+File name: to_sort_sys
+Records: 120
+Length: 512
+Source: sys
+Real time: 1.190000
+User time: 0.280000
+System time: 0.860000
+
+==========================================
+
+Command: sort
+File name: to_sort_lib
+Records: 120
+Length: 512
+Source: lib
+Real time: 1.500000
+User time: 0.450000
+System time: 1.030000
+
+==========================================
+
+Command: copy
+File name from: generated_data
+File name to: to_sort_sys
+Records to create: 50
 Length: 1024
 Source: sys
 Real time: 0.000000
@@ -335,7 +289,7 @@ System time: 0.000000
 Command: copy
 File name from: generated_data
 File name to: to_sort_lib
-Records to create: 20
+Records to create: 50
 Length: 1024
 Source: lib
 Real time: 0.000000
@@ -346,23 +300,69 @@ System time: 0.000000
 
 Command: sort
 File name: to_sort_sys
-Records: 20
+Records: 50
 Length: 1024
 Source: sys
-Real time: 0.230000
-User time: 0.040000
-System time: 0.180000
+Real time: 0.790000
+User time: 0.190000
+System time: 0.580000
 
 ==========================================
 
 Command: sort
 File name: to_sort_lib
-Records: 20
+Records: 50
 Length: 1024
 Source: lib
-Real time: 0.310000
-User time: 0.090000
-System time: 0.210000
+Real time: 1.090000
+User time: 0.310000
+System time: 0.760000
+
+==========================================
+
+Command: copy
+File name from: generated_data
+File name to: to_sort_sys
+Records to create: 75
+Length: 1024
+Source: sys
+Real time: 0.000000
+User time: 0.000000
+System time: 0.000000
+
+==========================================
+
+Command: copy
+File name from: generated_data
+File name to: to_sort_lib
+Records to create: 75
+Length: 1024
+Source: lib
+Real time: 0.000000
+User time: 0.000000
+System time: 0.000000
+
+==========================================
+
+Command: sort
+File name: to_sort_sys
+Records: 75
+Length: 1024
+Source: sys
+Real time: 1.340000
+User time: 0.320000
+System time: 1.000000
+
+==========================================
+
+Command: sort
+File name: to_sort_lib
+Records: 75
+Length: 1024
+Source: lib
+Real time: 1.950000
+User time: 0.570000
+System time: 1.350000
 
 ==========================================
 
@@ -395,9 +395,9 @@ File name: to_sort_sys
 Records: 10
 Length: 4096
 Source: sys
-Real time: 0.470000
+Real time: 0.490000
 User time: 0.100000
-System time: 0.360000
+System time: 0.380000
 
 ==========================================
 
@@ -406,16 +406,16 @@ File name: to_sort_lib
 Records: 10
 Length: 4096
 Source: lib
-Real time: 0.820000
-User time: 0.200000
-System time: 0.610000
+Real time: 0.860000
+User time: 0.220000
+System time: 0.620000
 
 ==========================================
 
 Command: copy
 File name from: generated_data
 File name to: to_sort_sys
-Records to create: 20
+Records to create: 15
 Length: 4096
 Source: sys
 Real time: 0.000000
@@ -427,7 +427,7 @@ System time: 0.000000
 Command: copy
 File name from: generated_data
 File name to: to_sort_lib
-Records to create: 20
+Records to create: 15
 Length: 4096
 Source: lib
 Real time: 0.000000
@@ -438,68 +438,68 @@ System time: 0.000000
 
 Command: sort
 File name: to_sort_sys
-Records: 20
+Records: 15
 Length: 4096
 Source: sys
-Real time: 1.220000
-User time: 0.260000
-System time: 0.930000
-
-==========================================
-
-Command: sort
-File name: to_sort_lib
-Records: 20
-Length: 4096
-Source: lib
-Real time: 2.130000
-User time: 0.520000
-System time: 1.590000
-
-==========================================
-
-Command: copy
-File name from: generated_data
-File name to: to_sort_sys
-Records to create: 5
-Length: 8192
-Source: sys
-Real time: 0.000000
-User time: 0.000000
-System time: 0.000000
-
-==========================================
-
-Command: copy
-File name from: generated_data
-File name to: to_sort_lib
-Records to create: 5
-Length: 8192
-Source: lib
-Real time: 0.000000
-User time: 0.000000
-System time: 0.000000
-
-==========================================
-
-Command: sort
-File name: to_sort_sys
-Records: 5
-Length: 8192
-Source: sys
-Real time: 0.540000
-User time: 0.100000
-System time: 0.420000
-
-==========================================
-
-Command: sort
-File name: to_sort_lib
-Records: 5
-Length: 8192
-Source: lib
-Real time: 0.830000
+Real time: 0.850000
 User time: 0.180000
+System time: 0.660000
+
+==========================================
+
+Command: sort
+File name: to_sort_lib
+Records: 15
+Length: 4096
+Source: lib
+Real time: 1.500000
+User time: 0.370000
+System time: 1.120000
+
+==========================================
+
+Command: copy
+File name from: generated_data
+File name to: to_sort_sys
+Records to create: 5
+Length: 8192
+Source: sys
+Real time: 0.000000
+User time: 0.000000
+System time: 0.000000
+
+==========================================
+
+Command: copy
+File name from: generated_data
+File name to: to_sort_lib
+Records to create: 5
+Length: 8192
+Source: lib
+Real time: 0.720000
+User time: 0.000000
+System time: 0.000000
+
+==========================================
+
+Command: sort
+File name: to_sort_sys
+Records: 5
+Length: 8192
+Source: sys
+Real time: 0.580000
+User time: 0.100000
+System time: 0.440000
+
+==========================================
+
+Command: sort
+File name: to_sort_lib
+Records: 5
+Length: 8192
+Source: lib
+Real time: 0.850000
+User time: 0.200000
 System time: 0.640000
 
 ==========================================
@@ -533,9 +533,9 @@ File name: to_sort_sys
 Records: 10
 Length: 8192
 Source: sys
-Real time: 1.320000
-User time: 0.270000
-System time: 1.040000
+Real time: 1.380000
+User time: 0.290000
+System time: 1.070000
 
 ==========================================
 
@@ -544,9 +544,9 @@ File name: to_sort_lib
 Records: 10
 Length: 8192
 Source: lib
-Real time: 2.180000
-User time: 0.560000
-System time: 1.600000
+Real time: 2.270000
+User time: 0.550000
+System time: 1.690000
 
 ==========================================
 

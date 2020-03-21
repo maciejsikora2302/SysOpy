@@ -336,7 +336,7 @@ int main(int argc, char **argv)
             char* buffor = (char*) calloc(length_of_record, sizeof(char));
             int we, wy;
             we = open(file_name_from, O_RDONLY);
-            wy = open(file_name_to,O_WRONLY|O_CREAT);
+            wy = open(file_name_to, O_WRONLY|O_CREAT);
             while(read(we, buffor, length_of_record) > 0)
                 write(wy, buffor, length_of_record); 
             free(buffor);
