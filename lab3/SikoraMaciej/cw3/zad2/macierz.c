@@ -56,49 +56,99 @@ int get_columns(FILE* second_matrix){
     return column_counter;
 }
 
-int get_value_from_row(char* row, int* pos){
-    // int pos = 0;
-    char c = row[pos];
-    char* to_int = calloc(10, sizeof(char));
-    while(c != ' '){
-        to_int[pos] = c;
-        c = row[++pos];
+int get_rows(FILE* second_matrix){
+    // char* c = calloc(100000, sizeof(char));
+    char c;
+    int row_counter = 0;
+
+    fseek(second_matrix, 0, SEEK_SET);
+    while((( c = fgetc(second_matrix) )) != EOF){
+        if(c == '\n') row_counter++;
     }
-    int val_row = atoi(to_int);
-    free(to_int);
-    return val_row;
+    // row_counter++;
+    fseek(second_matrix, 0, SEEK_SET);
+    // free(c);
+    return row_counter;
 }
 
-void calculate_block(int start_column, int end_column, char** matrixA, FILE* second_matrix, FILE* result_file, int max_columns){
-    if(max_columns < end_column && start_column >= max_columns){
+// int get_value_from_row(char* row, int* pos){
+//     // int pos = 0;
+//     char c = row[*pos];
+//     char* to_int = calloc(10, sizeof(char));
+//     while(c != ' '){
+//         to_int[*pos] = c;
+//         c = row[++*pos];
+//     }
+//     printf("to_int: %s\n", to_int);
+//     int val_row = atoi(to_int);
+//     free(to_int);
+//     return val_row;
+// }
+
+void calculate_block(int start_column, int end_column, int columns, int rows, int matrixA[][rows], int matrixB[][columns], FILE* result_file){
+    if(columns < end_column && start_column >= columns){
         printf("I tried to read columns that are too far\n");
         return;
-    }else if (max_columns < end_column && start_column < max_columns){
-        end_column = max_columns;
+    }else if (columns < end_column && start_column < columns){
+        end_column = columns;
         printf("I had to change end_column to max_column\n");
     }
-    printf("I got columns from %d to %d\n", start_column, end_column);
+    printf("I got columns from %d to %d with rows %d\n", start_column, end_column, rows);
     
-    int res_tab[end_column-start_column][end_column-start_column];
+    int res_tab[end_column-start_column][columns];
+    for(int i=0;i<end_column - start_column ; i++){
+        for(int j=0; j<columns; j++){
+            res_tab[i][j]=0;
+        }
+    }
 
-    for(int i=0; i < end_column-start_column; i++){
-        for(int j=0; j < end_column-start_column; j++){
-            char* row = matrixA[j];
-            int pos = 0;
-            int val_a = get_value_from_row(row, pos);
+    for(int column = 0; column < end_column-start_column; column++){
+        for(int row = 0; row < rows; row++){
+            // printf("my pid: %d\n", getpid());
+            // char* row = matrixA[j];
+            // int pos = 0;
+            // int val_a = get_value_from_row(row, &pos);
 
-            //TODO: znajdowanie offsetu, przetestowanie czy działa
-            fseek(second_matrix, offset, SEEK_SET);
-            char c;
-            char* tmp = calloc(10, sizeof(char));
-            int place = 0;
-            while( ((c = fgetc(second_matrix))) != ' ' ){
-                tmp[place++] = c;
+            // //Ustawienie wskaźnika w pliku na odpowiednie miejsce, najpierw odpowiedni wiersz potem odpowiednia kolumna
+            // char* tmp1 = calloc(MAX_SIZE*4, sizeof(char));
+            // int line_counter = 0;
+            // while(line_counter < j){
+            //     fgets(tmp1, MAX_SIZE*4, second_matrix);
+            //     line_counter++;
+            // }
+            // free(tmp1);
+
+            // char tmp_c;
+            // int space_counter = 0;
+            // while(1){
+            //     if(space_counter == start_column){
+            //         break;
+            //     }
+            //     tmp_c = fgetc(second_matrix);
+            //     if(tmp_c == ' '){
+            //         space_counter++;
+            //     }
+            // }
+            // //TODO: znajdowanie offsetu, przetestowanie czy działa
+            // // fseek(second_matrix, offset, SEEK_SET);
+            // char c;
+            // char* tmp = calloc(10, sizeof(char));
+            // int place = 0;
+            // while( ((c = fgetc(second_matrix))) != ' ' ){
+            //     tmp[place++] = c;
+            // }
+            // int val_b = atoi(tmp);
+            // free(tmp);
+            for(int iter = 0; iter < rows; iter++){
+                int val_a = matrixA[row][iter];
+                int val_b = matrixB[column][iter];
+                res_tab[column][row] += val_a * val_b;
+                printf("Val_a: %d, Val_b: %d\n", val_a, val_b);
             }
-            int val_b = atoi(tmp);
-            free(tmp);
+            
 
-            res_tab[i][j] += val_a * val_b;
+            
+            printf("Value [%d][%d] = %d\n", start_column + column, row, res_tab[column][row]);
         }
         
     }
@@ -185,8 +235,36 @@ int main(int argc, char** argv){
         }        
 
         int columns = get_columns(second_matrix_file);
+        int rows = get_rows(second_matrix_file);
 
-        printf("Number of columnts: %d\n", columns);
+        printf("Columns: %d Rows: %d\n", columns, rows);
+
+        int first_matrix_values[rows][columns];
+        fseek(first_matrix_file, 0, SEEK_SET);
+        for(int column = 0; column < columns; column++){
+            int value;
+            for(int row = 0; row < rows; row++){
+                fscanf(first_matrix_file, "%d", &value);
+                first_matrix_values[column][row] = value;
+                printf("fmv: %d, row: %d, column: %d\n", first_matrix_values[column][row], row, column);
+            }
+            printf("\n");
+        }
+
+        int second_matrix_values[rows][columns];
+        fseek(second_matrix_file, 0, SEEK_SET);
+        for(int row = 0; row < rows; row++){
+            int value;
+            for(int column = 0; column < columns; column++){
+                fscanf(second_matrix_file, "%d", &value);
+                second_matrix_values[column][row] = value;
+                printf("smv: %d, row: %d, column: %d\n", second_matrix_values[column][row], row, column);
+            }
+            printf("\n");
+        }
+
+        fclose(first_matrix_file);
+        fclose(second_matrix_file);
 
         prepare_result_file(result_file_file, columns);
 
@@ -209,7 +287,7 @@ int main(int argc, char** argv){
             for(int i = 0; i <= columns / (number_of_columnts_per_process*number_of_children); i++)
                 calculate_block(number_of_children * number_of_columnts_per_process * i + my_number * number_of_columnts_per_process,
                             (number_of_children * number_of_columnts_per_process * i ) + number_of_columnts_per_process + my_number * number_of_columnts_per_process,
-                            matrixA, second_matrix_file, result_file_file_2, columns
+                            columns, rows, first_matrix_values, second_matrix_values, result_file_file_2
                 );
         }
         
@@ -219,8 +297,8 @@ int main(int argc, char** argv){
             free(second_matrix);
             free(result_file);
             fclose(lista);
-            fclose(first_matrix_file);
-            fclose(second_matrix_file);
+            // fclose(first_matrix_file);
+            // fclose(second_matrix_file);
             fclose(result_file_file);
             for(int i=0;i<MAX_SIZE;i++){
                 free(matrixA[i]);
