@@ -4,11 +4,14 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <sys/file.h>
 
 #define SHARED 0
 #define SCATTERED 1
 #define PARENT main_pid == getpid()
 #define CHILD main_pid != getpid()
+#define FLOCK_LOCK flock(fileno(fd), LOCK_EX | LOCK_NB)
+#define FLOCK_UNLOCK flock(fileno(fd), LOCK_UN)
 
 int MAX_SIZE;
 /*
@@ -86,35 +89,44 @@ int get_rows(FILE* second_matrix){
 }
 
 void write_result_to_file(int start_column, int end_column, int columns, FILE* rf, int res_tab[][columns]){
+
+    // printf("Resault table: \n");
+    // for(int i=0;i<end_column-start_column;i++){
+    //     for(int j=0;j<columns;j++){
+    //         printf("t[%d][%d]: %d\t", j, i, res_tab[j][i]);
+    //     }
+    //     printf("\n");
+    // }
     fseek(rf, 0, SEEK_SET);
-    char* tmp = calloc(100000, sizeof(char));
-    fscanf(rf, "%s", tmp);
-    printf("wypisuję: %s\n", tmp);
-    return;
+    // char* tmp = calloc(100000, sizeof(char));
+    // fscanf(rf, "%s", tmp);
+    // printf("wypisuję: %s\n", tmp);
+    // return;
     fseek(rf, start_column*7, SEEK_CUR);
     for(int row = 0; row < columns; row++){
         for(int column = 0; column < end_column - start_column; column++){
-            fprintf(rf, "%d", res_tab[row][column]);
+            fprintf(rf, "%d", res_tab[column][row]);
 
             char c;
             while(((c = fgetc(rf))) != ' '){
-                printf("%d", c);
+                // printf("%d", c);
                 if(c==EOF) break;
             }
         }
+        fseek(rf, (columns - (end_column - start_column))*7 + 1, SEEK_CUR);
     }
     
 }
 
-void calculate_block(int start_column, int end_column, int columns, int rows, int matrixA[][rows], int matrixB[][columns], FILE* result_file){
+void calculate_block(int start_column, int end_column, int columns, int rows, int matrixA[][rows], int matrixB[][columns], char* result_file){
     if(columns < end_column && start_column >= columns){
-        printf("I tried to read columns that are too far\n");
+        printf("I tried to read columns that are too far <-> start: %d end %d\n", start_column, end_column);
         return;
     }else if (columns < end_column && start_column < columns){
         end_column = columns;
         printf("I had to change end_column to max_column\n");
     }
-    printf("I got columns from %d to %d with rows %d\n", start_column, end_column, rows);
+    printf("I (%d) got columns from %d to %d with rows %d\n", getpid(), start_column, end_column, rows);
     
     int res_tab[end_column-start_column][columns];
     for(int i=0;i<end_column - start_column ; i++){
@@ -125,20 +137,43 @@ void calculate_block(int start_column, int end_column, int columns, int rows, in
 
     for(int column = 0; column < end_column-start_column; column++){
         for(int row = 0; row < columns; row++){
-
             for(int iter = 0; iter < rows; iter++){
                 int val_a = matrixA[row][iter];
                 int val_b = matrixB[iter][start_column + column];
                 res_tab[column][row] += val_a * val_b;
                 // printf("Val_a: %d, Val_b: %d, row: %d, column: %d, iter: %d, rows: %d, columns: %d\n", val_a, val_b, row, column, iter, rows, columns);
             }
-            // printf("Value [%d][%d] = %d\n", start_column + column, row, res_tab[column][row]);
+            printf("Res_table[%d][%d] = %d\n", start_column + column, row, res_tab[column][row]);
             // printf("\n");
         }
         // printf("\n");
     }
-
-    // write_result_to_file(start_column, end_column, columns, result_file, res_tab);
+    FILE* fd = fopen(result_file, "r+");
+    int already_done = 0;
+    // printf("pid: %d is trying to open file (%s)\n", getpid(), result_file);
+    if(FLOCK_LOCK == 0){
+        write_result_to_file(start_column, end_column, columns, fd, res_tab);
+        FLOCK_UNLOCK;
+        already_done = 1;
+    }
+    while(already_done == 0){
+        if(FLOCK_LOCK == 0){
+            write_result_to_file(start_column, end_column, columns, fd, res_tab);
+            FLOCK_UNLOCK;
+            already_done = 1;
+        }
+        while(FLOCK_LOCK == -1 && already_done == 0){
+        // perror("flock");
+        if(FLOCK_LOCK == 0){
+            write_result_to_file(start_column, end_column, columns, fd, res_tab);
+            FLOCK_UNLOCK;
+            already_done = 1;
+            }
+        }
+    }
+    
+    fclose(fd);
+    
 }
 
 int main(int argc, char** argv){
@@ -198,7 +233,7 @@ int main(int argc, char** argv){
         // system("touch wyniki.txt");
         // system("chmod 777 wynik.txt");
 
-        int number_of_columnts_per_process = 2;
+        int number_of_columns_per_process = 1;
 
         FILE* first_matrix_file = fopen(first_matrix, "r");
         FILE* second_matrix_file = fopen(second_matrix, "r");
@@ -244,8 +279,6 @@ int main(int argc, char** argv){
 
         // fclose(resu); //somehow forks were executing write commands to this file without invoking prepare_result_file
 
-        FILE* result_file_file_2 = fopen(result_file, "r+");
-
         pid_t main_pid = getpid();
         for(int k=0; k<number_of_children; k++){
             if(PARENT){
@@ -258,10 +291,10 @@ int main(int argc, char** argv){
         
         if(CHILD){
             int my_number = getpid() - main_pid - 1;
-            for(int i = 0; i <= columns / (number_of_columnts_per_process*number_of_children); i++)
-                calculate_block(number_of_children * number_of_columnts_per_process * i + my_number * number_of_columnts_per_process,
-                            (number_of_children * number_of_columnts_per_process * i ) + number_of_columnts_per_process + my_number * number_of_columnts_per_process,
-                            columns, rows, first_matrix_values, second_matrix_values, result_file_file_2
+            for(int i = 0; i <= columns / (number_of_columns_per_process*number_of_children); i++)
+                calculate_block(number_of_children * number_of_columns_per_process * i + my_number * number_of_columns_per_process,
+                            (number_of_children * number_of_columns_per_process * i ) + number_of_columns_per_process + my_number * number_of_columns_per_process,
+                            columns, rows, first_matrix_values, second_matrix_values, result_file
                 );
         }
         
