@@ -12,8 +12,13 @@ compile:
 	gcc -Wall -g -c macierz.c
 	gcc -o macierz macierz.o
 
+aaa:
+	gcc -Wall -g -c aaa.c
+	gcc -o aaa aaa.o
+	./aaa
+
 test:
-	./macierz './lista' 2 10 shared
+	./macierz './lista' 1 10 shared
 	# ./macierz './lista' 2 10 scattered
 	# scattered
 	#lista ilość_procesów_potomnych max_czas_życia_w_sekundach wariant_zapisu_wspolny_plik_albo_wiele_malych

@@ -22,22 +22,36 @@ scattered
 
 // Założenie, że wynikowa macierz ma być kwadratowa (tak wynika z polecenia i przykładów)
 
-void prepare_result_file(FILE* result, int n){
-    char* to_write = calloc(7, sizeof(char));
-    strcpy(to_write, "###### ");
+void prepare_result_file(char* result, int n){
+    FILE* fp = fopen(result, "w");
+    
+    if(fp == NULL){
+        perror("fopen: ");
+    }
+    // system("ls -l");
+    printf("File name: %s\n", result);
+    // char* to_write = calloc(100, sizeof(char));
+    // strcpy(to_write, "###### ");
+    // char to_write = '#';
     printf("n == %d\n", n);
     for(int rep = 0; rep < n; rep++){
         for(int j = 0; j < n; j++){
-            // fwrite(to_write, 1, sizeof(to_write), result);
-            fprintf(result, "%s", to_write);
+            // fwrite(to_write, 1, sizeof(to_write), fp);
+            fprintf(fp, "###### ");
+            printf("###### ");
+            // for(int i=0;i<6;i++)
+            //     fprintf(fp, "%c", to_write);
+            // fprintf(fp, "%c", ' ');
             // printf("%s\n", to_write);
         }
         
-        fprintf(result, "\n");
+        fprintf(fp, "\n");
+        printf("\n");
         // fwrite("\n", 1, sizeof(char), result);
     }
     // fseek(result, 0, 0);
-    free(to_write);
+    // free(to_write);
+    fclose(fp);
 }
 
 int get_columns(FILE* second_matrix){
@@ -71,19 +85,26 @@ int get_rows(FILE* second_matrix){
     return row_counter;
 }
 
-// int get_value_from_row(char* row, int* pos){
-//     // int pos = 0;
-//     char c = row[*pos];
-//     char* to_int = calloc(10, sizeof(char));
-//     while(c != ' '){
-//         to_int[*pos] = c;
-//         c = row[++*pos];
-//     }
-//     printf("to_int: %s\n", to_int);
-//     int val_row = atoi(to_int);
-//     free(to_int);
-//     return val_row;
-// }
+void write_result_to_file(int start_column, int end_column, int columns, FILE* rf, int res_tab[][columns]){
+    fseek(rf, 0, SEEK_SET);
+    char* tmp = calloc(100000, sizeof(char));
+    fscanf(rf, "%s", tmp);
+    printf("wypisuję: %s\n", tmp);
+    return;
+    fseek(rf, start_column*7, SEEK_CUR);
+    for(int row = 0; row < columns; row++){
+        for(int column = 0; column < end_column - start_column; column++){
+            fprintf(rf, "%d", res_tab[row][column]);
+
+            char c;
+            while(((c = fgetc(rf))) != ' '){
+                printf("%d", c);
+                if(c==EOF) break;
+            }
+        }
+    }
+    
+}
 
 void calculate_block(int start_column, int end_column, int columns, int rows, int matrixA[][rows], int matrixB[][columns], FILE* result_file){
     if(columns < end_column && start_column >= columns){
@@ -111,17 +132,18 @@ void calculate_block(int start_column, int end_column, int columns, int rows, in
                 res_tab[column][row] += val_a * val_b;
                 // printf("Val_a: %d, Val_b: %d, row: %d, column: %d, iter: %d, rows: %d, columns: %d\n", val_a, val_b, row, column, iter, rows, columns);
             }
-            printf("Value [%d][%d] = %d\n", start_column + column, row, res_tab[column][row]);
+            // printf("Value [%d][%d] = %d\n", start_column + column, row, res_tab[column][row]);
             // printf("\n");
         }
-        printf("\n");
+        // printf("\n");
     }
+
+    // write_result_to_file(start_column, end_column, columns, result_file, res_tab);
 }
 
 int main(int argc, char** argv){
     MAX_SIZE = 100;
     puts("");
-    // return 0;
     if(argc == 5){
         char* path_to_list = argv[1];
         int number_of_children = atoi(argv[2]);
@@ -166,27 +188,22 @@ int main(int argc, char** argv){
             }
             times++;
         }
+        fclose(lista);
 
-        
-
-        printf("First matrix: %s\n", first_matrix);
+        printf("\nFirst matrix: %s\n", first_matrix);
         printf("Second matrix: %s\n", second_matrix);
         printf("Result file: %s\n", result_file);
         // printf("\n");
         // return 0;
+        // system("touch wyniki.txt");
+        // system("chmod 777 wynik.txt");
 
         int number_of_columnts_per_process = 2;
 
-        
-
         FILE* first_matrix_file = fopen(first_matrix, "r");
         FILE* second_matrix_file = fopen(second_matrix, "r");
-        FILE* result_file_file = fopen(result_file, "a");
 
-
-        
-        
-        if(first_matrix_file == NULL || second_matrix_file == NULL || result_file_file == NULL){
+        if(first_matrix_file == NULL || second_matrix_file == NULL){
             perror("fopen: ");
             return 0;
         }     
@@ -203,9 +220,9 @@ int main(int argc, char** argv){
             for(int row = 0; row < rows; row++){
                 fscanf(first_matrix_file, "%d", &value);
                 first_matrix_values[column][row] = value;
-                printf("fmv: %d, row: %d, column: %d\n", first_matrix_values[column][row], row, column);
+                // printf("fmv: %d, row: %d, column: %d\n", first_matrix_values[column][row], row, column);
             }
-            printf("\n");
+            // printf("\n");
         }
 
         int second_matrix_values[rows][columns];
@@ -215,19 +232,19 @@ int main(int argc, char** argv){
             for(int column = 0; column < columns; column++){
                 fscanf(second_matrix_file, "%d", &value);
                 second_matrix_values[row][column] = value;
-                printf("smv: %d, row: %d, column: %d\n", second_matrix_values[column][row], row, column);
+                // printf("smv: %d, row: %d, column: %d\t", second_matrix_values[row][column], row, column);
             }
-            printf("\n");
+            // printf("\n");
         }
 
         fclose(first_matrix_file);
         fclose(second_matrix_file);
 
-        prepare_result_file(result_file_file, columns);
+        prepare_result_file(result_file, columns);
 
-        fclose(result_file_file); //somehow forks were executing write commands to this file without invoking prepare_result_file
+        // fclose(resu); //somehow forks were executing write commands to this file without invoking prepare_result_file
 
-        FILE* result_file_file_2 = fopen(result_file, "a");
+        FILE* result_file_file_2 = fopen(result_file, "r+");
 
         pid_t main_pid = getpid();
         for(int k=0; k<number_of_children; k++){
@@ -253,10 +270,9 @@ int main(int argc, char** argv){
             free(first_matrix);
             free(second_matrix);
             free(result_file);
-            fclose(lista);
             // fclose(first_matrix_file);
             // fclose(second_matrix_file);
-            fclose(result_file_file);
+            // fclose(result_file_file);
 
         }else{
             printf("I'm a child with pid(%d) and number(%d)\n", getpid(), getpid()-main_pid);
