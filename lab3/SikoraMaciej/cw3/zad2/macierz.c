@@ -25,8 +25,8 @@ scattered
 
 // Założenie, że wynikowa macierz ma być kwadratowa (tak wynika z polecenia i przykładów)
 
-void prepare_result_file(char* result, int n){
-    FILE* fp = fopen(result, "w");
+void prepare_result_file(char* result, int rows_a, int columns_b){
+    FILE* fp = fopen(result, "w+");
     
     if(fp == NULL){
         perror("fopen: ");
@@ -36,9 +36,9 @@ void prepare_result_file(char* result, int n){
     // char* to_write = calloc(100, sizeof(char));
     // strcpy(to_write, "###### ");
     // char to_write = '#';
-    printf("n == %d\n", n);
-    for(int rep = 0; rep < n; rep++){
-        for(int j = 0; j < n; j++){
+    printf("rows_a = %d, columns_b = %d\n", rows_a, columns_b);
+    for(int rep = 0; rep < rows_a; rep++){
+        for(int j = 0; j < columns_b; j++){
             // fwrite(to_write, 1, sizeof(to_write), fp);
             fprintf(fp, "###### ");
             printf("###### ");
@@ -58,18 +58,21 @@ void prepare_result_file(char* result, int n){
 }
 
 int get_columns(FILE* second_matrix){
-    char* c = calloc(100000, sizeof(char));
+    // char* c = calloc(100000, sizeof(char));
     int column_counter = 0;
-
-    c = fgets(c, sizeof(c), second_matrix);
-    for(int i=0; c[i] != '\0'; i++){
-        if(c[i] == ' '){
-            column_counter++;
-        }
+    // fgets(c, sizeof(c), second_matrix);
+    char c;
+    while( (c=fgetc(second_matrix)) != '\n'){
+        if(c == ' ') column_counter++;
     }
+    // for(int i=0; c[i] != '\0'; i++){
+    //     if(c[i] == ' '){
+    //         column_counter++;
+    //     }
+    // }
     column_counter++;
     fseek(second_matrix, 0, 0);
-    free(c);
+    // free(c);
     return column_counter;
 }
 
@@ -88,22 +91,17 @@ int get_rows(FILE* second_matrix){
     return row_counter;
 }
 
-void write_result_to_file(int start_column, int end_column, int columns, FILE* rf, int res_tab[][columns]){
-
+void write_result_to_file(int start_column, int end_column, int rows_a, int columns_b, FILE* rf, int res_tab[][rows_a]){
     // printf("Resault table: \n");
     // for(int i=0;i<end_column-start_column;i++){
-    //     for(int j=0;j<columns;j++){
+    //     for(int j=0;j<columns_b;j++){
     //         printf("t[%d][%d]: %d\t", j, i, res_tab[j][i]);
     //     }
     //     printf("\n");
     // }
     fseek(rf, 0, SEEK_SET);
-    // char* tmp = calloc(100000, sizeof(char));
-    // fscanf(rf, "%s", tmp);
-    // printf("wypisuję: %s\n", tmp);
-    // return;
     fseek(rf, start_column*7, SEEK_CUR);
-    for(int row = 0; row < columns; row++){
+    for(int row = 0; row < rows_a; row++){
         for(int column = 0; column < end_column - start_column; column++){
             fprintf(rf, "%d", res_tab[column][row]);
 
@@ -113,67 +111,100 @@ void write_result_to_file(int start_column, int end_column, int columns, FILE* r
                 if(c==EOF) break;
             }
         }
-        fseek(rf, (columns - (end_column - start_column))*7 + 1, SEEK_CUR);
+        fseek(rf, (columns_b - (end_column - start_column))*7 + 1, SEEK_CUR);
     }
     
 }
-
-void calculate_block(int start_column, int end_column, int columns, int rows, int matrixA[][rows], int matrixB[][columns], char* result_file){
-    if(columns < end_column && start_column >= columns){
+//rows_b must be equals to columns_a
+//result is rows_a x columns_b
+void calculate_block(int start_column, int end_column, int rows_a, int columns_b, int rows_b, int matrixA[][rows_b], int matrixB[][columns_b], char* result_file){
+    if(columns_b < end_column && start_column >= columns_b){
         printf("I tried to read columns that are too far <-> start: %d end %d\n", start_column, end_column);
         return;
-    }else if (columns < end_column && start_column < columns){
-        end_column = columns;
+    }else if (columns_b < end_column && start_column < columns_b){
+        end_column = columns_b;
         printf("I had to change end_column to max_column\n");
     }
-    printf("I (%d) got columns from %d to %d with rows %d\n", getpid(), start_column, end_column, rows);
+    printf("I (%d) got columns_b from %d to %d with rows_b %d\n", getpid(), start_column, end_column, rows_b);
+    // printf("matrixA:\n");
+    // for(int i=0; i<rows_a;i++){
+    //     for(int j=0;j<rows_b;j++){
+    //         printf("row: %d, column: %d, val: %d \n", i, j, matrixA[i][j]);
+    //     }
+    //     printf("\n");
+    // }
     
-    int res_tab[end_column-start_column][columns];
+    int res_tab[end_column-start_column][rows_a];
     for(int i=0;i<end_column - start_column ; i++){
-        for(int j=0; j<columns; j++){
+        for(int j=0; j<rows_a; j++){
             res_tab[i][j]=0;
         }
     }
 
-    for(int column = 0; column < end_column-start_column; column++){
-        for(int row = 0; row < columns; row++){
-            for(int iter = 0; iter < rows; iter++){
+    // for(int column = 0; column < end_column-start_column; column++){
+    //     for(int row = 0; row < rows_a; row++){
+    //         for(int iter = 0; iter < rows_b; iter++){
+    //             int val_a = matrixA[row][iter];
+    //             int val_b = matrixB[iter][start_column + column];
+    //             res_tab[column][row] += val_a * val_b;
+    //             printf("Val_a: %d, Val_b: %d, row: %d, column: %d, iter: %d, rows_b: %d, columns_b: %d\n", val_a, val_b, row, column, iter, rows_b, columns_b);
+    //         }
+    //         printf("Res_table[%d][%d] = %d\n", start_column + column, row, res_tab[column][row]);
+    //         // printf("\n");
+    //     }
+    //     // printf("\n");
+    // }
+    for(int row = 0; row < rows_a; row++){
+        for(int column = 0; column < end_column - start_column; column++){
+            for(int iter = 0; iter < rows_b; iter++){
                 int val_a = matrixA[row][iter];
                 int val_b = matrixB[iter][start_column + column];
                 res_tab[column][row] += val_a * val_b;
-                // printf("Val_a: %d, Val_b: %d, row: %d, column: %d, iter: %d, rows: %d, columns: %d\n", val_a, val_b, row, column, iter, rows, columns);
+                // printf("Val_a: %d, Val_b: %d, row: %d, column: %d, iter: %d, rows_b: %d, columns_b: %d\n", val_a, val_b, row, column, iter, rows_b, columns_b);
             }
-            printf("Res_table[%d][%d] = %d\n", start_column + column, row, res_tab[column][row]);
-            // printf("\n");
+            // printf("Res_table[%d][%d] = %d\n", start_column + column, row, res_tab[column][row]);
         }
-        // printf("\n");
     }
-    FILE* fd = fopen(result_file, "r+");
+    
+    FILE* fd = fopen("tmp.txt", "r+");
     int already_done = 0;
     // printf("pid: %d is trying to open file (%s)\n", getpid(), result_file);
     if(FLOCK_LOCK == 0){
-        write_result_to_file(start_column, end_column, columns, fd, res_tab);
+        write_result_to_file(start_column, end_column, rows_a, columns_b, fd, res_tab);
         FLOCK_UNLOCK;
         already_done = 1;
     }
     while(already_done == 0){
         if(FLOCK_LOCK == 0){
-            write_result_to_file(start_column, end_column, columns, fd, res_tab);
+            write_result_to_file(start_column, end_column, rows_a, columns_b, fd, res_tab);
             FLOCK_UNLOCK;
             already_done = 1;
         }
         while(FLOCK_LOCK == -1 && already_done == 0){
         // perror("flock");
         if(FLOCK_LOCK == 0){
-            write_result_to_file(start_column, end_column, columns, fd, res_tab);
+            write_result_to_file(start_column, end_column, rows_a, columns_b, fd, res_tab);
             FLOCK_UNLOCK;
             already_done = 1;
             }
         }
     }
-    
     fclose(fd);
-    
+}
+
+void clean_up_result_file(char* result_file){
+    FILE* tmp = fopen("tmp.txt", "r");
+    FILE* fd = fopen(result_file, "w+");
+    char c;
+    while((c = fgetc(tmp)) != EOF){
+        if(c != '#'){
+            // printf("%c", c);
+            // fseek(fd, -1, SEEK_CUR);
+            fprintf(fd, "%c", c);
+        }
+    }
+    fclose(tmp);
+    fclose(fd);
 }
 
 int main(int argc, char** argv){
@@ -243,26 +274,30 @@ int main(int argc, char** argv){
             return 0;
         }     
 
+        int rows_a = get_rows(first_matrix_file);
         int columns = get_columns(second_matrix_file);
-        int rows = get_rows(second_matrix_file);
+        int rows_b = get_rows(second_matrix_file);
+        
 
-        printf("Columns: %d Rows: %d\n", columns, rows);
+        printf("Columns: %d Rows_a: %d, Rows_b: %d\n", columns, rows_a, rows_b);
 
-        int first_matrix_values[columns][rows];
+        int first_matrix_values[rows_a][rows_b];
         fseek(first_matrix_file, 0, SEEK_SET);
-        for(int column = 0; column < columns; column++){
+        for(int row = 0; row < rows_a; row++){
             int value;
-            for(int row = 0; row < rows; row++){
+            for(int column = 0; column < rows_b; column++){
                 fscanf(first_matrix_file, "%d", &value);
-                first_matrix_values[column][row] = value;
-                // printf("fmv: %d, row: %d, column: %d\n", first_matrix_values[column][row], row, column);
+                first_matrix_values[row][column] = value;
+                // printf("fmv: %d, row: %d, column: %d\t", first_matrix_values[row][column], row, column);
             }
             // printf("\n");
         }
 
-        int second_matrix_values[rows][columns];
+        printf("\n");
+
+        int second_matrix_values[rows_b][columns];
         fseek(second_matrix_file, 0, SEEK_SET);
-        for(int row = 0; row < rows; row++){
+        for(int row = 0; row < rows_b; row++){
             int value;
             for(int column = 0; column < columns; column++){
                 fscanf(second_matrix_file, "%d", &value);
@@ -275,7 +310,7 @@ int main(int argc, char** argv){
         fclose(first_matrix_file);
         fclose(second_matrix_file);
 
-        prepare_result_file(result_file, columns);
+        prepare_result_file("tmp.txt", rows_a, columns);
 
         // fclose(resu); //somehow forks were executing write commands to this file without invoking prepare_result_file
 
@@ -285,7 +320,7 @@ int main(int argc, char** argv){
                 fork();
             }
         }
-        wait(NULL);
+        
 
         // columns = 11;
         
@@ -294,15 +329,19 @@ int main(int argc, char** argv){
             for(int i = 0; i <= columns / (number_of_columns_per_process*number_of_children); i++)
                 calculate_block(number_of_children * number_of_columns_per_process * i + my_number * number_of_columns_per_process,
                             (number_of_children * number_of_columns_per_process * i ) + number_of_columns_per_process + my_number * number_of_columns_per_process,
-                            columns, rows, first_matrix_values, second_matrix_values, result_file
+                            rows_a, columns, rows_b, first_matrix_values, second_matrix_values, result_file
                 );
+            // execlp("echo", "echo", "I'm done");
         }
         
         if(PARENT){
+            wait(NULL);
             printf("I'm a parent with pid(%d) and number(%d)\n", getpid(), getpid()-main_pid);
             free(first_matrix);
             free(second_matrix);
+            clean_up_result_file(result_file);
             free(result_file);
+            // system("rm tmp.txt");
             // fclose(first_matrix_file);
             // fclose(second_matrix_file);
             // fclose(result_file_file);

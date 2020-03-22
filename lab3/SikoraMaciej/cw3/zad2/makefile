@@ -18,7 +18,7 @@ aaa:
 	./aaa
 
 test:
-	./macierz './lista' 10 10 shared
+	./macierz './lista' 1 10 shared
 	# ./macierz './lista' 2 10 scattered
 	# scattered
 	#lista ilość_procesów_potomnych max_czas_życia_w_sekundach wariant_zapisu_wspolny_plik_albo_wiele_malych

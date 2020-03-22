@@ -17,7 +17,7 @@ int main(){
         for(int j = 0; j < n; j++){
             // fwrite(to_write, 1, sizeof(to_write), fp);
             fprintf(fp, "###### ");
-            printf("###### ");
+            // printf("###### ");
             // for(int i=0;i<6;i++)
             //     fprintf(fp, "%c", to_write);
             // fprintf(fp, "%c", ' ');
