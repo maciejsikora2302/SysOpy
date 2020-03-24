@@ -5,6 +5,7 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <sys/file.h>
+#include <time.h>
 
 #define SHARED 0
 #define SCATTERED 1
@@ -14,6 +15,7 @@
 #define FLOCK_UNLOCK flock(fileno(fd), LOCK_UN)
 
 int MAX_SIZE;
+int MODE;
 /*
 
 ./find './lista' 2 10 shared
@@ -115,12 +117,32 @@ void write_result_to_file(int start_column, int end_column, int rows_a, int colu
     }
     
 }
+
+
+void write_using_multiple_files(int start_column, int end_column, int rows_a, int columns_b, int res_tab[][rows_a], char* my_file){
+    FILE* rf = fopen(my_file, "w+");
+    for(int row = 0; row < rows_a; row++){
+        for(int column = 0; column < end_column - start_column; column++){
+            fprintf(rf, "%d ", res_tab[column][row]);
+            // char c;
+            // while(((c = fgetc(rf))) != ' '){
+            //     // printf("%d", c);
+            //     if(c==EOF) break;
+            // }
+        }
+        // fseek(rf, (columns_b - (end_column - start_column))*7 + 1, SEEK_CUR);
+        fprintf(rf, "\n");
+    }
+    fclose(rf);
+}
+
+
 //rows_b must be equals to columns_a
 //result is rows_a x columns_b
-void calculate_block(int start_column, int end_column, int rows_a, int columns_b, int rows_b, int matrixA[][rows_b], int matrixB[][columns_b], char* result_file){
+int calculate_block(int start_column, int end_column, int rows_a, int columns_b, int rows_b, int matrixA[][rows_b], int matrixB[][columns_b], char* result_file, char* my_file){
     if(columns_b < end_column && start_column >= columns_b){
         printf("I tried to read columns that are too far <-> start: %d end %d\n", start_column, end_column);
-        return;
+        return 0;
     }else if (columns_b < end_column && start_column < columns_b){
         end_column = columns_b;
         printf("I had to change end_column to max_column\n");
@@ -165,7 +187,7 @@ void calculate_block(int start_column, int end_column, int rows_a, int columns_b
             // printf("Res_table[%d][%d] = %d\n", start_column + column, row, res_tab[column][row]);
         }
     }
-    
+    if(MODE == SHARED){
     FILE* fd = fopen("tmp.txt", "r+");
     int already_done = 0;
     // printf("pid: %d is trying to open file (%s)\n", getpid(), result_file);
@@ -190,6 +212,11 @@ void calculate_block(int start_column, int end_column, int rows_a, int columns_b
         }
     }
     fclose(fd);
+    }else if(MODE == SCATTERED){
+        write_using_multiple_files(start_column, end_column, rows_a, columns_b, res_tab, my_file);
+    }
+    
+    return 1;
 }
 
 void clean_up_result_file(char* result_file){
@@ -230,6 +257,8 @@ int main(int argc, char** argv){
         printf("Life time in seconds: %d\n", life_time);
         printf("Mode (name, program definition): %s, %d\n", argv[4], save_mode);
 
+        MODE = save_mode;
+
         FILE* lista = fopen(path_to_list, "r");
 
         char c;
@@ -264,7 +293,7 @@ int main(int argc, char** argv){
         // system("touch wyniki.txt");
         // system("chmod 777 wynik.txt");
 
-        int number_of_columns_per_process = 1;
+        int number_of_columns_per_process = 3;
 
         FILE* first_matrix_file = fopen(first_matrix, "r");
         FILE* second_matrix_file = fopen(second_matrix, "r");
@@ -314,6 +343,11 @@ int main(int argc, char** argv){
 
         // fclose(resu); //somehow forks were executing write commands to this file without invoking prepare_result_file
 
+        // int number_of_multiplications[number_of_children];
+        // for(int i=0;i<number_of_children;i++){
+        //     number_of_multiplications[i] = 0;
+        // }
+        time_t start = time(NULL);
         pid_t main_pid = getpid();
         for(int k=0; k<number_of_children; k++){
             if(PARENT){
@@ -323,14 +357,32 @@ int main(int argc, char** argv){
         
 
         // columns = 11;
-        
+        int nom=0;
         if(CHILD){
             int my_number = getpid() - main_pid - 1;
-            for(int i = 0; i <= columns / (number_of_columns_per_process*number_of_children); i++)
-                calculate_block(number_of_children * number_of_columns_per_process * i + my_number * number_of_columns_per_process,
+            char* my_file = calloc(100, sizeof(char));
+            for(int i = 0; i <= columns / (number_of_columns_per_process*number_of_children); i++){
+                time_t now = time(NULL);
+                if(now - start > life_time){
+                    printf("I lived longer that I could. My age: %ld, Number of multiplications: %d\n", now-start, nom);
+                    return 0;
+                    free(my_file);
+                }
+                if(MODE == SCATTERED){
+                    sprintf(my_file, "scattered%d.txt", number_of_children * number_of_columns_per_process * i + my_number * number_of_columns_per_process);
+                    printf("Pid: %d, my_number:%d, my_file: %s\n", getpid(), my_number, my_file);
+                }
+                nom += calculate_block(number_of_children * number_of_columns_per_process * i + my_number * number_of_columns_per_process,
                             (number_of_children * number_of_columns_per_process * i ) + number_of_columns_per_process + my_number * number_of_columns_per_process,
-                            rows_a, columns, rows_b, first_matrix_values, second_matrix_values, result_file
+                            rows_a, columns, rows_b, first_matrix_values, second_matrix_values, result_file, my_file
                 );
+                
+
+                // printf("asd");
+                // number_of_multiplications[my_number-1]+=1;
+                // printf("%d ", number_of_multiplications[my_number-1]);
+            }
+            free(my_file);
             // execlp("echo", "echo", "I'm done");
         }
         
@@ -339,15 +391,20 @@ int main(int argc, char** argv){
             printf("I'm a parent with pid(%d) and number(%d)\n", getpid(), getpid()-main_pid);
             free(first_matrix);
             free(second_matrix);
-            clean_up_result_file(result_file);
+            if(MODE == SHARED){
+                clean_up_result_file(result_file);
+                system("rm tmp.txt");
+            }
+            if(MODE == SCATTERED){
+                char* command = calloc(100, sizeof(char));
+                sprintf(command, "paste -d '' scattered* > %s", result_file);
+                system(command);
+                free(command);
+                system("rm -f scattered*");
+            }
             free(result_file);
-            // system("rm tmp.txt");
-            // fclose(first_matrix_file);
-            // fclose(second_matrix_file);
-            // fclose(result_file_file);
-
         }else{
-            printf("I'm a child with pid(%d) and number(%d)\n", getpid(), getpid()-main_pid);
+            printf("I'm a child with pid(%d) and number(%d) and I did %d multiplications\n", getpid(), getpid()-main_pid, nom);
             return 0;
         }
         // printf("");
