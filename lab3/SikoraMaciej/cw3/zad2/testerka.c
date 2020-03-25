@@ -153,8 +153,8 @@ int main(int argc, char** argv){
             int failed_shared = 0;
             int failed_scattered = 0;
             // printf("\nsth5\n");
-            for(int number_of_workers = 2; number_of_workers <= 10; number_of_workers++){
-                for(int avaliable_time = 1; avaliable_time <= 20; avaliable_time += 5){
+            for(int number_of_workers = 2; number_of_workers <= 5; number_of_workers++){
+                for(int avaliable_time = 1; avaliable_time <= 11; avaliable_time += 5){
                     for(int mode = 0; mode < 2; mode++){
                         char* mode_s;
                         if(mode == 0){
@@ -164,6 +164,7 @@ int main(int argc, char** argv){
                         }
                         sprintf(command, "./macierz './test_list.txt' %d %d %s", number_of_workers, avaliable_time, mode_s);
                         run_program(command);
+                        // msleep(1000);
                         if(compare_results(rows_a, columns_b, matrix_c, name3, number_of_workers, avaliable_time) == 1){
                             printf("Test passed: number of workers(%d), avaliable time(%d), mode_s(%s)\n", number_of_workers, avaliable_time, mode_s);
                             // msleep(1000);    

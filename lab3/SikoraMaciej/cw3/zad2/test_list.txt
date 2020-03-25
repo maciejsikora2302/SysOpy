@@ -1,1 +1,1 @@
-matrix_a_6x6.txt matrix_b_6x6.txt matrix_c_6x6.txt 
+matrix_a_5x8.txt matrix_b_8x6.txt matrix_c_5x6.txt 

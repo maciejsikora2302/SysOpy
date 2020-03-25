@@ -1,11 +1,11 @@
 all:
 	clear
-	make clean
+	@make clean
 	make compile
-	rm -f wynik.txt
-	touch wynik.txt
+	@rm -f wynik.txt
+	@touch wynik.txt
 	make test
-	make clean
+	@make clean
 	
 
 compile:
@@ -18,18 +18,18 @@ aaa:
 	./aaa
 
 test:
-	./macierz './lista' 2 10 shared
+	./macierz './lista' 3 10 shared 1 1
 	# ./macierz './lista' 2 2 scattered
 	#lista ilość_procesów_potomnych max_czas_życia_w_sekundach wariant_zapisu_wspolny_plik_albo_wiele_malych
 
-testerka:
-	clear
-	make clean
-	rm -f matrix*
-	gcc -Wall -g -c testerka.c
-	gcc -o testerka testerka.o
-	./testerka 3 5 20
-	#ilość_macierzy min max
+# testerka:
+# 	clear
+# 	make clean
+# 	rm -f matrix*
+# 	gcc -Wall -g -c testerka.c
+# 	gcc -o testerka testerka.o
+# 	./testerka 1 5 7
+# 	#ilość_macierzy min max
 
 clean:
 	rm -f *.o
