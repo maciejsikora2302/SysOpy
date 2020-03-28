@@ -1,0 +1,11 @@
+Ignore:
+	Ta opcja jest dziedziczona przez fork i exec
+
+Handler:
+	handler nie jest dziedziczkony przez procesy potomne i jest wykorzystywane podstawowe działanie SIGUSR1 czyli zakończenie działania programu.
+
+Mask:
+	Blokowanie sygnału jest dziedziczone przez procesy potomne
+
+Pending:
+	Proces potomny po wywołany funkcją fork nie widział, sygnału oczekującego, za to proces wywołany funkcją exec widział oczekujący sygnał
