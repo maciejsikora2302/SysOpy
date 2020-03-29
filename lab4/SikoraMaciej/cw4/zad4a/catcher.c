@@ -81,9 +81,11 @@ int main(int argc, char** argv){
 
             for(int i=0;i<number_of_signals_receved;i++){
                 union sigval val;
+                val.sival_int = i;
                 sigqueue(pid_of_sender, S1, val);
             }
             union sigval val;
+            val.sival_int = number_of_signals_receved;
             sigqueue(pid_of_sender, S2, val);
             printf("Catchers ending his job after sending signals back to sender.\n");
             return 0;

@@ -14,15 +14,18 @@
 int number_of_signals_receved = 0;
 int number_of_signals_to_send = 0;
 
-int su_handled = 0;
+int waiting_for_su2 = 1;
+int waiting_for_su1 = 1;
 
 void su1_handler(int sg_nr, siginfo_t *info, void *ucontext){
     number_of_signals_receved++;
     // printf("sender got su1\n");
+    waiting_for_su1 = 0;
 }
 
 void su2_handler(int sg_nr){
-    su_handled = 1;
+    waiting_for_su2 = 0;
+    waiting_for_su1 = 0;
     // exit(0);
 }
 
@@ -54,20 +57,22 @@ int main(int argc, char** argv){
         if(strcmp(mode, "KILL") == 0){
             for(int i=0; i<number_of_signals_to_send; i++){
                 kill(pid, S1);
+                while(waiting_for_su1 == 1){}
+                waiting_for_su1 = 1;
             }
             kill(pid, S2);
-            printf("Sender enering inf loop\n");
-            while(su_handled == 0){}
+            // printf("Sender enering inf loop\n");
+
             printf("I'm a sender and I have received %d singals back and I have send %d\n", number_of_signals_receved, number_of_signals_to_send);
         }else if(strcmp(mode, "SIGQUEUE") == 0){
             for(int i=0; i<number_of_signals_to_send; i++){
                 union sigval val;
                 sigqueue(pid, S1, val);
+                while(waiting_for_su1 == 1){}
+                waiting_for_su1 = 1;
             }
             union sigval val;
             sigqueue(pid, S2, val);
-            printf("Sender enering inf loop\n");
-            while(su_handled == 0){}
             printf("I'm a sender and I have received %d singals back and I have send %d\n", number_of_signals_receved, number_of_signals_to_send);
         }else if(strcmp(mode, "SIGRT") == 0){
             // SIGINT
@@ -82,11 +87,11 @@ int main(int argc, char** argv){
             signal(SIGTSTP, su2_handler);
 
             for(int i=0; i<number_of_signals_to_send; i++){
-                kill(pid, SIGINT);
+                kill(pid, S1);
+                while(waiting_for_su1 == 1){}
+                waiting_for_su1 = 1;
             }
-            kill(pid, SIGTSTP);
-            printf("Sender enering inf loop\n");
-            while(su_handled == 0){}
+            kill(pid, S2);
             printf("I'm a sender and I have received %d singals back and I have send %d\n", number_of_signals_receved, number_of_signals_to_send);
         }
     }

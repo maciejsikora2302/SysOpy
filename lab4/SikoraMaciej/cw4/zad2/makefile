@@ -21,3 +21,4 @@ test:
 clean:
 	rm -f *.o
 	rm -f prog
+	rm -f child

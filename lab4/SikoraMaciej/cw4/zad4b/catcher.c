@@ -17,20 +17,21 @@ int number_of_signals_to_send = 0;
 int pid_of_sender = -1;
 
 int not_received_su2 = 1;
+int waiting_for_su1 = 1;
 
 void su1_handler(int sg_nr, siginfo_t *info, void *ucontext){
     number_of_signals_receved++;
     if (pid_of_sender == -1){
         pid_of_sender = info->si_pid;
-        printf("Catcher got su1 from pid: %d\n", pid_of_sender);
+        // printf("Catcher got su1 from pid: %d\n", pid_of_sender);
     }
-        
-    
+    waiting_for_su1 = 0;
 }
 
 void su2_handler(int sg_nr){
     printf("I'm a catcher and I received SIGUSR2 and I've got %d SIGUSR1\n", number_of_signals_receved);
     not_received_su2 = 0;
+    waiting_for_su1 = 0;
     // exit(0);
 }
 
@@ -64,28 +65,32 @@ int main(int argc, char** argv){
         if(strcmp(mode, "KILL") == 0){
             //waiting untill we get sigusr2 back
             printf("catcher waiting for signals...\n");
-            while(not_received_su2 == 1){}
-            printf("catcher received SIGUSR2\n");
-
-            for(int i=0;i<number_of_signals_receved;i++){
+            while(not_received_su2 == 1){
+                while(waiting_for_su1 == 1){}
+                waiting_for_su1 = 1;
                 kill(pid_of_sender, S1);
             }
-            kill(pid_of_sender, S2);
-            printf("Catchers ending his job after sending signals back to sender.\n");
+            printf("catcher received SIGUSR2\n");
+
+            // for(int i=0;i<number_of_signals_receved;i++){
+            //     kill(pid_of_sender, S1);
+            //     // while(waiting_for_su1 == 1){}
+            // }
+            // kill(pid_of_sender, S2);
+            printf("Catchers ending his job.\n");
             return 0;
         }else if(strcmp(mode, "SIGQUEUE") == 0){
             // not_received_su2 = 1;
             printf("catcher waiting for signals...\n");
-            while(not_received_su2 == 1){}
-            printf("catcher received SIGUSR2\n");
-
-            for(int i=0;i<number_of_signals_receved;i++){
+            while(not_received_su2 == 1){
+                while(waiting_for_su1 == 1){}
+                waiting_for_su1 = 1;
                 union sigval val;
                 sigqueue(pid_of_sender, S1, val);
             }
-            union sigval val;
-            sigqueue(pid_of_sender, S2, val);
-            printf("Catchers ending his job after sending signals back to sender.\n");
+            printf("catcher received SIGUSR2\n");
+
+            printf("Catchers ending his job.\n");
             return 0;
         }else if(strcmp(mode, "SIGRT") == 0){
             // unblocking
@@ -106,14 +111,13 @@ int main(int argc, char** argv){
 
             //waiting untill we get sigusr2 back
             printf("catcher waiting for signals...\n");
-            while(not_received_su2 == 1){}
-            printf("catcher received SIGUSR2\n");
-
-            for(int i=0;i<number_of_signals_receved;i++){
-                kill(pid_of_sender, SIGINT);
+            while(not_received_su2 == 1){
+                while(waiting_for_su1 == 1){}
+                waiting_for_su1 = 1;
+                kill(pid_of_sender, S1);
             }
-            kill(pid_of_sender, SIGTSTP);
-            printf("Catchers ending his job after sending signals back to sender.\n");
+            printf("catcher received SIGUSR2\n");
+            printf("Catchers ending his job.\n");
             return 0;
         }
     }
