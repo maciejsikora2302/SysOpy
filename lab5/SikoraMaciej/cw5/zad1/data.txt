@@ -1,0 +1,5 @@
+ls | head -2 | tail -1
+ls | head -3 | tail -1
+ls | tail -1 | tail -1
+ps aux | wc -l | wc -c
+ps aux

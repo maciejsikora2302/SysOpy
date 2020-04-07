@@ -13,14 +13,12 @@
 
 int number_of_signals_receved = 0;
 int number_of_signals_to_send = 0;
-int numbers_included_in_val = -1;
 
 int su_handled = 0;
 
 void su1_handler(int sg_nr, siginfo_t *info, void *ucontext){
     number_of_signals_receved++;
-    numbers_included_in_val = info->si_value.sival_int;
-    // printf("sender got su1\n");
+    printf("sender got signar nr: %d, with flag from catcher: %d\n", number_of_signals_receved, info->si_value.sival_int);
 }
 
 void su2_handler(int sg_nr){
@@ -70,7 +68,7 @@ int main(int argc, char** argv){
             sigqueue(pid, S2, val);
             printf("Sender enering inf loop\n");
             while(su_handled == 0){}
-            printf("I'm a sender and I have received %d singals back and I have send %d, extra info: %d\n", number_of_signals_receved, number_of_signals_to_send, numbers_included_in_val);
+            printf("I'm a sender and I have received %d singals back and I have send %d\n", number_of_signals_receved, number_of_signals_to_send);
         }else if(strcmp(mode, "SIGRT") == 0){
             // SIGINT
             // SIGTSTP

@@ -4,9 +4,6 @@
 #include <signal.h>
 #include <unistd.h> 
 
-// void info(char* msg){
-//     printf("%s", msg);
-// }
 
 int wait_for_stp = 0;
 
