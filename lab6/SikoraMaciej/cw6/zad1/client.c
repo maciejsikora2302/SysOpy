@@ -20,6 +20,7 @@ int queue_descriptor = -1;
 int private_id = -1;
 int connect_to_queue = -1;
 
+// creating message queue key for given client
 int create_queue(char *path, int id) {
     int key = ftok(path, id);
     if(key == -1) FAIL_EXIT("Generation of key failed -> f-create_queue | client");
@@ -31,6 +32,7 @@ int create_queue(char *path, int id) {
 
 }
 
+// function for closing queue where received message DISCONNECT or on program exit
 void close_queue() {
     if (private_id > -1) {
         if (msgctl(private_id, IPC_RMID, NULL) == -1){
@@ -42,6 +44,7 @@ void close_queue() {
     }
 }
 
+// listing all avaiable message queues
 void list_request(Message *msg) {
     msg->m_type = LIST;
 
@@ -54,6 +57,7 @@ void list_request(Message *msg) {
     puts(msg->message_text);
 }
 
+
 void stop_request(Message *msg) {
     msg->m_type = STOP;
 
@@ -63,13 +67,14 @@ void stop_request(Message *msg) {
     exit(2);
 }
 
-
+//SIG_INT handler
 void int_handler(int sig) {
     Message msg;
     msg.sender_pid = getpid();
     stop_request(&msg);
 }
 
+//handling disconnect request
 void disconnect_request(Message *msg) {
 
     if(msgsnd(queue_descriptor, msg, MSG_SIZE, 0) == -1)
@@ -84,50 +89,52 @@ void disconnect_request(Message *msg) {
     connect_to_queue = -1;
 }
 
+//Handling message request
 void message_request(Message *msg){
 
-    printf("-------------------------\n");
+    printf("========================\n");
     if (fgets(msg->message_text, MAX_SIZE, stdin) == 0) {
-        printf("CLIENT: too many characters\n");
+        printf("Too many characters -> f-message_request | client\n");
         return;
     }
     msg->m_type = MESSAGE;
-    printf("-------------------------\n");
+    printf("========================\n");
     if(msgsnd(connect_to_queue, msg, MSG_SIZE, 0) == -1)
-        FAIL_EXIT("CLIENT: CONNECT request failed");
+        FAIL_EXIT("CONNECT request failed -> f-message_request | client");
 
     printf("2ND CLIENT -> ");
     if(msgrcv(private_id, msg, MSG_SIZE, 0, 0) == -1)
-        FAIL_EXIT("CLIENT: catching CONNECT response failed");
+        FAIL_EXIT("Catching CONNECT response failed -> f-message_request | client");
 
     if (strcmp(msg->message_text, "DISCONNECTED") == 0) msg->m_type = DISCONNECT;
         
     printf("%s\n", msg->message_text);
 }
 
+//handling connection request
 void connect_request(Message *msg) {
     msg->m_type = CONNECT;
 
     printf("CONNECT TO? -> ");
     if (fgets(msg->message_text, MAX_SIZE, stdin) == 0) {
-        printf("CLIENT: too many characters\n");
+        printf("Too many characters -> f-connect_request | client\n");
         return;
     }
     if(msgsnd(queue_descriptor, msg, MSG_SIZE, 0) == -1)
-        FAIL_EXIT("CLIENT: CONNECT request failed");
+        FAIL_EXIT("CONNECT request failed -> f-connect_request | client");
 
     if(msgrcv(private_id, msg, MSG_SIZE, 0, 0) == -1)
-        FAIL_EXIT("CLIENT: catching CONNECT response failed");
+        FAIL_EXIT("Catching CONNECT response failed -> f-connect_request | client");
 
     connect_to_queue = atoi(msg->message_text);
 
     if(connect_to_queue == 0) {
-        puts("SERVER -> no such client to connect");
+        puts("SERVER -> no such client to connect -> f-connect_request | client");
         return;
     }
 
     
-    printf("SERVER -> connected to another client\n");
+    printf("SERVER -> connected to another client -> f-connect_request | client\n");
 
     char cmd[20];
     while(1) {
@@ -136,7 +143,7 @@ void connect_request(Message *msg) {
         signal(SIGINT, int_handler);
         printf("MESSAGE/DISCONNECT? -> ");
         if (fgets(cmd, 20, stdin) == NULL){
-            printf("CLIENT: error reading you request\n");
+            printf("Error reading you request -> f-connect_request | client\n");
             continue;
         }
         int n = strlen(cmd);
@@ -148,14 +155,14 @@ void connect_request(Message *msg) {
         } else if (strcmp(cmd, "MESSAGE") == 0) {
             message_request(msg);
         } else {
-            printf("client: incorrect command\n");
+            printf("Incorrect command -> f-connect_request | client\n");
         }
 
     }
 }
 
 
-
+//Registering a client
 void register_client(key_t private_key) {
     Message msg;
     msg.m_type = INIT;
@@ -164,40 +171,42 @@ void register_client(key_t private_key) {
     sprintf(msg.message_text, "%d", private_key);
 
     if (msgsnd(queue_descriptor, &msg, MSG_SIZE, 0) == -1)
-        FAIL_EXIT("client: LOGIN request failed\n");
+        FAIL_EXIT("LOGIN request failed -> f-register_client | client\n");
     if (msgrcv(private_id, &msg, MSG_SIZE, 0, 0) == -1)
-        FAIL_EXIT("client: catching LOGIN response failed\n");
+        FAIL_EXIT("Catching LOGIN response failed -> f-register_client | client\n");
     if (sscanf(msg.message_text, "%d", &session_id) < 1)
-        FAIL_EXIT("client: scanning LOGIN response failed\n");
+        FAIL_EXIT("Scanning LOGIN response failed -> f-register_client | client\n");
     if (session_id < 0)
-        FAIL_EXIT("client: server cannot have more clients\n");
+        FAIL_EXIT("Server cannot have more clients -> f-register_client | client\n");
 
-    printf("client: client registered. Session no: %d\n", session_id);
+    printf("Client registered. Session no: %d -> f-register_client | client\n", session_id);
 }
 
 
 int main() {
+    //setting function on exit
     if(atexit(close_queue) == -1)
-        FAIL_EXIT("Registering client's atexit failed");
+        FAIL_EXIT("Registering client's atexit failed -> f-main | client");
+    //setting SIG_INT handling
     if(signal(SIGINT, int_handler) == SIG_ERR)
-        FAIL_EXIT("Registering INT failed");
+        FAIL_EXIT("Registering INT failed -> f-main | client");
 
     char* path = getenv("HOME");
 
     if (path == NULL)
-        FAIL_EXIT("Getting $HOME failed");
+        FAIL_EXIT("Getting $HOME failed -> f-main | client");
 
     queue_descriptor = create_queue(path, PROJECT_ID);
 
     key_t private_key = ftok(path, getpid());
 
     if (private_key == -1)
-        FAIL_EXIT("Generation of private key failed");
+        FAIL_EXIT("Generation of private key failed -> f-main | client");
 
     private_id = msgget(private_key, IPC_CREAT | IPC_EXCL | 0666);
 
     if (private_id == -1)
-        FAIL_EXIT("Creation of private queue failed");
+        FAIL_EXIT("Creation of private queue failed -> f-main | client");
 
     register_client(private_key);
 
@@ -224,7 +233,7 @@ int main() {
         } else if (strcmp(cmd, "STOP") == 0) {
             stop_request(&msg);
         } else {
-            printf("client: incorrect command\n");
+            printf("incorrect command -> f-main->while | client\n");
         }
     }
 }
