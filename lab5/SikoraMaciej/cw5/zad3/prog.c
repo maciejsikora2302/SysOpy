@@ -1,36 +1,48 @@
-#include <stdio.h>
+#include <stdio.h> 
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
+#include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 
+int main(int argc, char* argv[]) {
+    char* test_files [5] = { 
+                            "test1.txt",
+                            "test2.txt",
+                            "test3.txt",
+                            "test4.txt",
+                            "test5.txt"
+                            };
+                        
+    char* out_filename = "out.txt";
+    char* pipe_filename = "pipe";
 
-int main(int argc, char* argv[]) { 
-    if (argc < 2){
-        printf("Not enaugh arguments, -> %d\n", argc);
-    }
-    else{
-        char* filename = argv[1];   
+    mkfifo(pipe_filename, 0666);
 
-        if (fork() == 0){
-            char* command = calloc(1000, sizeof(char));
-            sprintf(command, "sort %s", filename);
-            FILE* fd = popen(command, "r");
-            char* lines = calloc(1000, sizeof(char));
-            while(fgets(lines, 1000, fd)!=NULL){
-                printf(lines);
-            }
-            pclose(fd);
-            free(command);
-            return 0;
+    // Create 5 producers
+    for (int i = 0; i < 5; i++) {
+        if (fork() == 0) {
+            int n = rand() % 10 + 3;
+            char buff [3];
+            sprintf(buff, "%d", n);
+            char* args [5] = {"./producer", pipe_filename, test_files[i], buff, NULL};
+            execvp("./producer", args);
         }
+    }  
 
-        printf("Main process starts to wait\n");
-        
-        wait(NULL);
+    // Run consumer
+    if (fork() == 0) {
+        int n = rand() % 10 + 3;
+        char buff [3];
+        sprintf(buff, "%d", n);
 
-        printf("Aaaaand done.\n");
-
-        return 0;
+        char* args [5] = {"./consumer", pipe_filename, out_filename, buff, NULL};
+        execvp("./consumer", args); 
     }
+
+    for (int i = 0; i < 6; i++) {
+        wait(NULL);
+    }
+
+    return 0;
 }
