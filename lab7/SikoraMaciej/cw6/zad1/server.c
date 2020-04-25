@@ -70,6 +70,10 @@ int main(){
         }
     }
 
+    for (int i = 0; i < NO_TOTAL_WORKERS; i++) {
+        waitpid(children[i], NULL, 0);
+    }
+
     detach_sh_array(orders);
     detach_sh_counter(counter);
     del_semaphore(sem);
