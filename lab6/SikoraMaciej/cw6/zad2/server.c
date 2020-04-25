@@ -6,23 +6,23 @@
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
-#include <sys/ipc.h>
-#include <sys/msg.h>
+#include <mqueue.h>
 #include <ctype.h>
 #include <time.h>
+#include <fcntl.h>
 #include <signal.h>
+
 #include "setting.h"
 
 #define FAIL_EXIT(format, ...) { fprintf(stderr, format, ##__VA_ARGS__); exit(-1); }
 
-int queue_descriptor = -2;
+mqd_t queue_descriptor = -2;
 int active = 1;
 int clients_data[MAX_CLIENTS][3];
 int client_count = 0;
 
 void int_handler(int _) { exit(2); }
 
-//Searching for correct id in clients array
 int find_queue_id(pid_t sender_pid) {
     for (int i=0; i < client_count; i++) {
         if(clients_data[i][0] == sender_pid)
@@ -31,7 +31,6 @@ int find_queue_id(pid_t sender_pid) {
     return -1;
 }
 
-//handling CONNECT command
 void handle_connect(Message *msg) {
     int queue_id = 0;
     for (int i=0; i < client_count; i++) {
@@ -40,7 +39,7 @@ void handle_connect(Message *msg) {
             queue_id = clients_data[i][1];
             msg->m_type = CONNECT; 
         }
-        if (clients_data[i][0] == msg->sender_pid) {
+        if (clients_data[i][0] == msg->sender_pid){
             if(clients_data[i][2] == 1) msg->m_type = MESSAGE;
             clients_data[i][2] = 1;
         }
@@ -48,11 +47,10 @@ void handle_connect(Message *msg) {
 
     sprintf(msg->message_text, "%d", queue_id);
     int client_queue_id = find_queue_id(msg->sender_pid);
-    if(msgsnd(client_queue_id, msg, MSG_SIZE, 0) == -1)
-        FAIL_EXIT("No such client to connect to -> f-handle_connection | server\n");
+    if(mq_send(client_queue_id,(char*) msg, MSG_SIZE, 1) == -1)
+        FAIL_EXIT("SERVER: no such client to connect to\n");
 }
 
-//handling LIST command
 void handle_list(Message *msg) {
 
     char list[MAX_SIZE];
@@ -67,11 +65,10 @@ void handle_list(Message *msg) {
     sprintf(msg->message_text, "%s", list);
 
     int  client_queue_id = find_queue_id(msg->sender_pid);
-    if(msgsnd(client_queue_id, msg, MSG_SIZE, 0) == -1)
-        FAIL_EXIT("LIST response failed -> f-handle_list | server");
+    if(mq_send(client_queue_id,(char*) msg, MSG_SIZE, 1) == -1)
+        FAIL_EXIT("SERVER: LIST response failed");
 }
 
-//handling DISCONNECT command
 void handle_disconnect(Message *msg) {
     for (int i=0; i < client_count; i++) {
         if (clients_data[i][0] == msg->sender_pid) {
@@ -81,22 +78,20 @@ void handle_disconnect(Message *msg) {
     }
 }
 
-//creating msg queue
 void handle_init(struct Message *msg) {
-    key_t client_queue_key;
-    if (sscanf(msg->message_text, "%d", &client_queue_key) < 0)
-        FAIL_EXIT("Reading client_queue_key failed -> f-handle_init | server\n");
-
-    int client_queue_id = msgget(client_queue_key, 0);
-    if (client_queue_id == -1)
-        FAIL_EXIT("Reading client_queue_id failed -> f-handle_init | server\n");
 
     int client_pid = msg->sender_pid;
+    char client_path[15];
+    sprintf(client_path, "/%d", client_pid);
+
+    int client_queue_id = mq_open(client_path, O_WRONLY);
+    if (client_queue_id == -1) FAIL_EXIT("SERVER -> reading client_queue_id failed\n");
+
     msg->m_type = INIT;
     msg->sender_pid = getpid();
 
     if (client_count > MAX_CLIENTS - 1) {
-        printf("Maximum number of clients reached -> f-handle_init | server\n");
+        printf("SERVER -> maximum number of clients reached\n");
         sprintf(msg->message_text, "%d", -1);
     } else {
         clients_data[client_count][0] = client_pid;
@@ -105,12 +100,12 @@ void handle_init(struct Message *msg) {
         sprintf(msg->message_text, "%d", client_count - 1);
     }
 
-    if (msgsnd(client_queue_id, msg, MSG_SIZE, 0) == -1)
-        FAIL_EXIT("LOGIN response failed -> f-handle_init | server\n");
+    if (mq_send(client_queue_id,(char*) msg, MSG_SIZE, 1) == -1)
+        FAIL_EXIT("server: LOGIN response failed\n");
 }
 
-//handling STOP command
 void handle_stop(Message *msg) {
+
     int idx = 0;
     for (int i = 0; i < client_count; i++) {
         if (clients_data[i][0] == msg->sender_pid)
@@ -122,22 +117,36 @@ void handle_stop(Message *msg) {
             clients_data[i][j] = clients_data[i+1][j];
         }
     }
+    
     client_count--;
 }
 
-//closing queue
 void close_queue() {
-    if (queue_descriptor > -1) {
-        int tmp = msgctl(queue_descriptor, IPC_RMID, NULL);
-        if (tmp == -1) {
-            printf("There was some error deleting server's queue -> f-close_queue | server\n");
+    int i; for (i = 0; i < client_count; ++i) {
+        if (mq_close(clients_data[i][1]) == -1) {
+            printf("server: error closing %d client queue\n", i);
         }
-        printf("Queue deleted successfully -> f-close_queue | server\n");
+        if (kill(clients_data[i][0], SIGINT) == -1) {
+            printf("server: error killing %d client\n", i);
+        }
     }
+    if (queue_descriptor > -1) {
+        if(mq_close(queue_descriptor) == -1) {
+            printf("server: error closing public queue\n");
+        } else {
+            printf("server: queue closed\n");
+        }
 
+        if (mq_unlink(server_path) == -1) {
+            printf("server: error deleting public queue\n");
+        } else {
+            printf("server: queue deleted successfully\n");
+        }
+    } else {
+        printf("server: there was no need of deleting queue\n");
+    }
 }
 
-//main swtich for parsing command
 void handle_queue(struct Message *msg) {
     if (msg == NULL) return;
     switch(msg->m_type){
@@ -163,35 +172,31 @@ void handle_queue(struct Message *msg) {
 
 int main() {
     if (atexit(close_queue) == -1)
-        FAIL_EXIT("Egistering server's atexit failed -> f-main | server\n");
+        FAIL_EXIT("server: egistering server's atexit failed\n");
 
     if (signal(SIGINT, int_handler) == SIG_ERR)
-        FAIL_EXIT("Registering INT failed -> f-main | server\n");
+        FAIL_EXIT("server: registering INT failed\n");
 
-    struct msqid_ds current_state;
+    struct mq_attr current_state;
+    struct mq_attr posix_attr;
+    posix_attr.mq_maxmsg = MAX_MESSAGE_QUEUE_SIZE;
+    posix_attr.mq_msgsize = MSG_SIZE;
 
-    char* path = getenv("PATH");
-    if(path == NULL)
-        FAIL_EXIT("Getting environmental variable 'HOME' failed -> f-main | server\n");
+    queue_descriptor = mq_open(server_path, O_RDONLY | O_CREAT | O_EXCL, 0666, &posix_attr);
 
-    key_t publicKey = ftok(path, PROJECT_ID);
-    if(publicKey == -1)
-        FAIL_EXIT("Generation of publicKey failed -> f-main | server\n");
-
-    queue_descriptor = msgget(publicKey, IPC_CREAT | IPC_EXCL | 0666);
-    if(queue_descriptor == -1)
-        FAIL_EXIT("Creation of public queue failed -> f-main | server\n");
+     if (queue_descriptor == -1)
+        FAIL_EXIT("server: creation of public queue failed\n");
 
     Message buffer;
     while(1) {
         if (active == 0) {
-            if (msgctl(queue_descriptor, IPC_STAT, &current_state) == -1)
-                FAIL_EXIT("Getting current state of public queue failed -> f-main | server\n");
-            if (current_state.msg_qnum == 0) break;
+            if (mq_getattr(queue_descriptor, &current_state) == -1)
+                FAIL_EXIT("server: getting current state of public queue failed\n");
+            if (current_state.mq_curmsgs == 0) break;
         }
 
-        if (msgrcv(queue_descriptor, &buffer, MSG_SIZE, 0, 0) < 0)
-            FAIL_EXIT("Receiving message failed -> f-main->while | server\n");
+        if (mq_receive(queue_descriptor,(char*) &buffer, MSG_SIZE, NULL) == -1)
+            FAIL_EXIT("server: receiving message failed\n");
         handle_queue(&buffer);
     }
     return 0;

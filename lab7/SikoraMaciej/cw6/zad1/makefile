@@ -5,12 +5,11 @@ all:
 	
 compile:
 	@gcc -Wall -g -c server.c
-	@gcc -o server server.o
-	@gcc -Wall -g -c client.c
-	@gcc -o client client.o
+	@gcc -Wall -g -c common_utils.c
+	@gcc -o server server.o common_utils.o
 
 run:
-	./server &
+	./server
 
 clean:
 	@rm -f *.o
