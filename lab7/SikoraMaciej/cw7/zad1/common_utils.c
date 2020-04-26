@@ -4,7 +4,7 @@ Order create_order(int n) {
   Order* order = malloc(sizeof(Order));
 
   order->n = n;
-  order->packed = UNPACKED;
+  order->state = UNPACKED;
 
   return *order;
 }
@@ -12,31 +12,34 @@ Order create_order(int n) {
 
 int next_empty(int start, Order* orders){
     int i = start;
-    while(1){
+    for(int j=0; j<MAX_ORDERS; j++){
         if(orders[i].n == 0){
             return i;
         }
         i = (i+1) % MAX_ORDERS;
     }
+    return -1;
 }
 
-int next_waiting(int start, Order* orders){
+int next_unpacked(int start, Order* orders){
     int i = start;
-    while(1){
-        if(orders[i].packed == UNPACKED && orders[i].n != 0){
+    for(int j=0; j<MAX_ORDERS; j++){
+        if(orders[i].n != 0 && orders[i].state == UNPACKED){
             return i;
         }
         i = (i+1) % MAX_ORDERS;
     }
+    return -1;
 }
-int next_packed(int start, Order* orders){
+int next_to_send(int start, Order* orders){
     int i = start;
-    while(1){
-        if(orders[i].packed == PACKED){
+    for(int j=0; j<MAX_ORDERS; j++){
+        if(orders[i].state == PACKED){
             return i;
         }
         i = (i+1) % MAX_ORDERS;
     }
+    return -1;
 }
 
 
@@ -54,23 +57,23 @@ char* random_string(int length) {
     return str;
 }
 
-char* get_time(char* buffer) {
+char* get_time(char* buffor) {
     struct timeval curTime;
     gettimeofday(&curTime, NULL);
     int milli = curTime.tv_usec / 1000;
     char buff [82];
   
     strftime(buff, 80, "%Y-%m-%d %H:%M:%S", localtime(&curTime.tv_sec));
-    sprintf(buffer, "%s:%03d", buff, milli);
+    sprintf(buffor, "%s:%03d", buff, milli);
 
-    return buffer;
+    return buffor;
 }
 
 
 // Shared array of orders
 int get_sh_array(){
     int id;
-    if( (id = shmget(SHM_KEY_ORDERS_ARRAY, 0, 0666)) ){
+    if( (id = shmget(SHM_KEY_ORDERS_ARRAY, 0, 0666)) < 0){
         perror("get_sh_array, shmget");
     }
     return id;

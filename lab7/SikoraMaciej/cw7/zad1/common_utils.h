@@ -39,12 +39,12 @@
 
 struct Order {
     int  n;
-    bool packed;
+    int state;
 } typedef Order;
 
 struct Counter {
-    int  orders_waiting;
-    int  orders_packed;
+    int  to_pack;
+    int  to_send;
 } typedef Counter;
 
 union sem_un {
@@ -57,12 +57,12 @@ Order create_order(int n);
 
 // Orders manipulation
 int next_empty(int start, Order* orders);
-int next_waiting(int start, Order* orders);
-int next_packed(int start, Order* orders);
+int next_unpacked(int start, Order* orders);
+int next_to_send(int start, Order* orders);
 
 // Small utils
 char* random_string(int length);
-char* get_time(char* buff);
+char* get_time(char* buffor);
 
 // Shared array of orders
 int get_sh_array();

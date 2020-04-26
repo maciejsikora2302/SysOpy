@@ -28,8 +28,8 @@ int main(){
     int sem = create_semaphore();
 
     Counter* counter = get_counter(sh_counter);
-    counter -> orders_packed = 0;
-    counter -> orders_waiting = 0;
+    counter -> to_pack = 0;
+    counter -> to_send = 0;
 
     Order* orders = get_orders(sh_array);
     //creating "empty orders", since memory is already being used why not say that there are orders that are not requested yet -> create slots for them
