@@ -14,10 +14,17 @@
 #include <sys/wait.h>
 #include <signal.h>
 
-//getting key_t using ftok function and using "HOME" path
-#define SHM_KEY_ORDERS_ARRAY (ftok(getenv("HOME"), 12))
-#define SHM_KEY_COUNTER (ftok(getenv("HOME"), 124))
-#define SEMAPHORE_KEY (ftok(getenv("HOME"), 64))
+//===============POSIX================
+#include <semaphore.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <pthread.h>
+#include <sys/mman.h>
+
+//names for POSIX functions
+#define SHM_NAME_ORDERS_ARRAY "/ARRAY"
+#define SHM_NAME_COUNTER "/KEY"
+#define SEMAPHORE_NAME "/MAIN"
 
 
 #define MAX_ORDERS 5
@@ -57,28 +64,27 @@ int next_unpacked(int start, Order* orders);
 int next_to_send(int start, Order* orders);
 
 // Small utils
-char* random_string(int length);
 char* get_time(char* buffor);
 
 // Shared array of orders
-int get_sh_array();
 int create_sh_array();
+int get_sh_array();
 void detach_sh_array(Order* orders);
-void del_sh_array(int id); 
-Order* get_orders(int id);
+void del_sh_array(); 
+Order* get_orders(int fd);
 
 // Shared orders counter
-int get_sh_counter();
 int create_sh_counter();
+int get_sh_counter();
 void detach_sh_counter(Counter* counter);
-void del_sh_counter(int id); 
+void del_sh_counter(); 
 Counter* get_counter(int id);
 
 // Semaphore \o/
-int create_semaphore(); 
-void del_semaphore(int sem_id);
-int get_semaphore();
+void create_semaphore(); 
+void del_semaphore();
+sem_t* get_semaphore();
 
 // Semaphore manipulation functions
-void use_resource(int sem_id);
-void free_resource(int sem_id);
+void use_resource(sem_t* sem);
+void free_resource(sem_t* sem);
