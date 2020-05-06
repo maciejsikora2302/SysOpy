@@ -14,7 +14,7 @@ int next_empty(int start, Order* orders){
     int i = start;
     for(int j=0; j<MAX_ORDERS; j++){
         if(orders[i].n == 0){
-            return i;
+            return i;   
         }
         i = (i+1) % MAX_ORDERS;
     }
