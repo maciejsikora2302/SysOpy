@@ -2,15 +2,26 @@ all:
 	make clean
 	clear
 	@make compile -s
-	@make run
 	
 compile:
-	@gcc -Wall -g -c main.c
-	@gcc -o main main.o -lpthread -lm
+	@gcc -Wall -g -c common.c
 
-run:
-	./main 5 10
+	@gcc -Wall -g -c client.c
+	@gcc -o client client.o common.o -lpthread -lm
+
+	@gcc -Wall -g -c server.c
+	@gcc -o server server.o common.o -lpthread -lm
+
+server:
+	./server 9002 .socket
+
+client1:
+	./client my_name1 net 127.0.0.1 9002
+
+client2:
+	./client my_name2 net 127.0.0.1 9002
 
 clean:
 	@rm -f *.o
-	@rm -f main testerka 
+	@rm -f client server
+	@echo "Clean"

@@ -8,12 +8,17 @@ char buffer[MESSAGE_BUFFER_LEN];
 char other_players_names[MAX_CLIENT_NAME];
 char mark;
 
+char* random_path = NULL;
+
+struct sockaddr_un addr;
+
 void cleanup() {
     printf("Client: I'm finishing playing...\n");
     printf("-------------------------------------------------------------\n");
 
-    notif_msg(buffer, MESSAGE_QUIT);
-    send(sockfd, buffer, strlen(buffer), 0);
+    if(random_path != NULL){
+        unlink(random_path);
+    }
 
     close(sockfd);
 }
@@ -27,7 +32,7 @@ void sighandler() {
 void net_socket(char* ipv4, int port) {
     struct sockaddr_in serv_addr; 
 
-    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
+    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) 
         printf("Client: Failed to create net socket");
    
     serv_addr.sin_family = AF_INET; 
@@ -42,12 +47,26 @@ void net_socket(char* ipv4, int port) {
 }
 
 void unix_socet(char* path) {
-    struct sockaddr_un addr;
     memset(&addr, 0, sizeof(addr));
     addr.sun_family = AF_UNIX;
     strncpy(addr.sun_path, path, sizeof(addr.sun_path) - 1);
 
-    sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
+    sockfd = socket(AF_UNIX, SOCK_DGRAM, 0);
+
+
+    random_path = random_path_generator(12);
+
+
+    struct sockaddr_un client_addr;
+    memset(&client_addr, 0, sizeof(client_addr));
+    client_addr.sun_family = AF_UNIX;
+    strncpy(client_addr.sun_path, random_path, 108);
+    bind(sockfd, (struct sockaddr *) &client_addr, sizeof(client_addr));
+
+    int opt = 1;  
+    setsockopt(sockfd, SOL_SOCKET, SO_PASSCRED, (char *)&opt, sizeof(opt));
+
+
     if (sockfd < 0)
         printf("Client: Failed to create unix socket");
     
@@ -56,6 +75,7 @@ void unix_socet(char* path) {
 } 
 
 int main(int argc, char* argv []) {
+    srand(time(NULL));
     if (argc < 3){
         printf("Client: Not enough arguments, should be at lest 3 but got %d", argc);
         exit(EXIT_FAILURE);
@@ -91,7 +111,11 @@ int main(int argc, char* argv []) {
 
     //send my name first
     name_msg(buffer, name);
-    send(sockfd, buffer, strlen(buffer), 0);
+    if (send(sockfd, buffer, strlen(buffer), MSG_CONFIRM) <= 0){
+        printf("Client: Failed to send name msg");
+        exit(EXIT_FAILURE);
+    }
+    
 
 
     //set of file descriptors containing standard input and socket fd
@@ -108,10 +132,11 @@ int main(int argc, char* argv []) {
 
         // check for server updates
         if (FD_ISSET(sockfd, &s_rd)) {
-            int bytesRead = read_msg(buffer, sockfd);
+            int bytesRead = recv(sockfd, buffer, MESSAGE_BUFFER_LEN, MSG_WAITALL);
+            buffer[bytesRead] = '\0';
             get_header(buffer, header);
 
-            // here happens most of the game logic
+            // game logic
             if (str_eq(header, MESSAGE_MOVE)) {
                 int mv;
                 parse_move(buffer, &mv);
